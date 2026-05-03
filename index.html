@@ -1035,7 +1035,7 @@ function uvCategory(uv) {
 }
 
 // ── OpenWeatherMap API key ─────────────────────────────────────────────────
-const OWM_KEY = '8f22186de7f428227529069985ecb4b4';
+const OWM_PROXY = 'https://rapid-paper-a152meteoron-owm-proxy.crokano.workers.dev';
 
 // ── Map setup ─────────────────────────────────────────────────────────────
 let map = null;
@@ -1160,7 +1160,7 @@ function setOWMLayer(layerName) {
   if (activeOWMLayer) { map.removeLayer(activeOWMLayer); activeOWMLayer = null; }
   if (layerName === 'none') return;
   activeOWMLayer = L.tileLayer(
-    `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${OWM_KEY}`,
+    `${OWM_PROXY}/map/${layerName}/{z}/{x}/{y}.png`,
     { opacity: 0.6, maxZoom: 19, attribution: '© <a href="https://openweathermap.org">OpenWeatherMap</a>' }
   ).addTo(map);
 }
