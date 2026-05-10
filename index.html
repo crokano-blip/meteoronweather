@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meteoron — Weather</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet">
-<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
 <style>
 /* ════════════════════════════════════════════════════════
    M3 ARCTIC — CSS TOKEN SYSTEM
@@ -918,7 +918,7 @@ body{
 
 </main>
 
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 <script>
 'use strict';
 
@@ -1390,7 +1390,6 @@ function initMap() {
     center: [0, 20],
     zoom: 1.8,
     attributionControl: true,
-    projection: 'mercator',
     failIfMajorPerformanceCaveat: false,
   });
 
@@ -1412,17 +1411,8 @@ function initMap() {
     fetchWeather(lat, lon, name);
   });
 
-  STATE.map.on('load', ()=>{
-    STATE.map.addSource('owm-weather',{
-      type:'raster',
-      tiles:[`${OWM_PROXY}/map/none/{z}/{x}/{y}.png`],
-      tileSize:256, attribution:'© OpenWeatherMap',
-    });
-    STATE.map.addLayer({
-      id:'owm-weather-layer', type:'raster', source:'owm-weather',
-      paint:{'raster-opacity':0},
-    });
-  });
+  // OWM layers are added on demand via setOWMLayer()
+  STATE.map.on('load', ()=>{ STATE.mapStyleLoaded = true; });
 
   document.querySelectorAll('.m3-chip').forEach(chip=>{
     chip.addEventListener('click', ()=>{
@@ -1464,28 +1454,45 @@ function updateCoordBar(lat, lon) {
 function swapBaseLayer() { /* Mapbox style is fixed and theme-independent */ }
 
 function setOWMLayer(layerName) {
-  const map=STATE.map;
+  const map = STATE.map;
   if (!map) return;
-  const legend=document.getElementById('mapLegend');
-  const apply=()=>{
-    if (!map.getSource('owm-weather')) return;
-    if (layerName==='none') {
-      map.setPaintProperty('owm-weather-layer','raster-opacity',0);
-      legend.classList.remove('show'); return;
+  const legend = document.getElementById('mapLegend');
+
+  const apply = () => {
+    // Remove existing OWM layer/source if present
+    if (map.getLayer('owm-weather-layer')) map.removeLayer('owm-weather-layer');
+    if (map.getSource('owm-weather'))      map.removeSource('owm-weather');
+
+    if (layerName === 'none') {
+      legend.classList.remove('show');
+      return;
     }
-    map.removeLayer('owm-weather-layer');
-    map.removeSource('owm-weather');
-    map.addSource('owm-weather',{type:'raster',tiles:[`${OWM_PROXY}/map/${layerName}/{z}/{x}/{y}.png`],tileSize:256,attribution:'© OpenWeatherMap'});
-    map.addLayer({id:'owm-weather-layer',type:'raster',source:'owm-weather',paint:{'raster-opacity':0.7}});
-    const data=LEGENDS[layerName];
-    document.getElementById('legendTitle').textContent=data.title;
-    document.getElementById('legendBar').style.background=data.gradient;
-    document.getElementById('legendMin').textContent=data.min;
-    document.getElementById('legendMid').textContent=data.mid;
-    document.getElementById('legendMax').textContent=data.max;
+
+    // Add fresh source and layer for selected weather overlay
+    map.addSource('owm-weather', {
+      type: 'raster',
+      tiles: [`${OWM_PROXY}/map/${layerName}/{z}/{x}/{y}.png`],
+      tileSize: 256,
+      attribution: '© OpenWeatherMap',
+    });
+    map.addLayer({
+      id: 'owm-weather-layer',
+      type: 'raster',
+      source: 'owm-weather',
+      paint: { 'raster-opacity': 0.7 },
+    });
+
+    const data = LEGENDS[layerName];
+    document.getElementById('legendTitle').textContent = data.title;
+    document.getElementById('legendBar').style.background = data.gradient;
+    document.getElementById('legendMin').textContent = data.min;
+    document.getElementById('legendMid').textContent = data.mid;
+    document.getElementById('legendMax').textContent = data.max;
     legend.classList.add('show');
   };
-  if (map.isStyleLoaded()) apply(); else map.once('load',apply);
+
+  if (map.isStyleLoaded()) apply();
+  else map.once('load', apply);
 }
 
 // ════════════════════════════════════════════════════════
