@@ -1,11 +1,8 @@
-// ════════════════════════════════════════════════════════════════════════════
-// METEORON — Complete JavaScript Implementation
-// All missing functions for weather forecast & satellite messaging
-// ════════════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// METEORON — Improved JavaScript Implementation
+// ════════════════════════════════════════════════════════════════
 
-// ──────────────────────────────────────────────────────────────────────────
-// STATE & CONFIG
-// ──────────────────────────────────────────────────────────────────────────
+// ─── CONFIGURATION ─────────────────────────────────────────────
 const CONFIG = {
   WMO_CODES: {
     0: ['Clear sky', '☀️'], 1: ['Mainly clear', '🌤'], 2: ['Partly cloudy', '⛅'],
@@ -18,6 +15,11 @@ const CONFIG = {
     95: ['Thunderstorm', '⛈'], 96: ['Thunderstorm + hail', '⛈'], 99: ['Severe thunderstorm', '⛈'],
   },
   COMPASS_DIRS: ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'],
+  API_TIMEOUTS: { GEOCODING: 5000, WEATHER: 8000, REVERSE: 5000 },
+  DEBOUNCE_DELAY: 300,
+  SUGGESTION_COUNT: 6,
+  HOURLY_COUNT: 24,
+  SAT_MESSAGE_WINDOWS: { SAILING: 160, ALPINE: 100 },
 };
 
 const STATE = {
@@ -31,11 +33,55 @@ const STATE = {
   currentData: null,
   map: null,
   mapLayer: null,
+  loading: false,
+  abortControllers: new Map(),
 };
 
-// ──────────────────────────────────────────────────────────────────────────
-// UTILITY FUNCTIONS
-// ──────────────────────────────────────────────────────────────────────────
+// ─── CACHED DOM ELEMENTS ───────────────────────────────────────
+const DOM = {
+  // Search/Nav
+  tabCity: document.getElementById('tabCity'),
+  tabCoords: document.getElementById('tabCoords'),
+  cityRow: document.getElementById('cityRow'),
+  coordRow: document.getElementById('coordRow'),
+  coordHint: document.getElementById('coordHint'),
+  suggestBox: document.getElementById('suggestions'),
+  cityInput: document.getElementById('cityInput'),
+  latInput: document.getElementById('latInput'),
+  lonInput: document.getElementById('lonInput'),
+
+  // Display
+  message: document.getElementById('message'),
+  weather: document.getElementById('weather'),
+  currentCard: document.getElementById('currentCard'),
+  hourlyRow: document.getElementById('hourlyRow'),
+  dayList: document.getElementById('dayList'),
+  detailGrid: document.getElementById('detailGrid'),
+
+  // Settings
+  themeToggleBtn: document.getElementById('themeToggleBtn'),
+  themeIcon: document.getElementById('themeIcon'),
+  settingsBtn: document.getElementById('settingsBtn'),
+  settingsScrim: document.getElementById('settingsScrim'),
+  settingsDrawer: document.getElementById('settingsDrawer'),
+
+  // Satellite
+  satToggleRow: document.getElementById('satToggleRow'),
+  satToggleBtn: document.getElementById('satToggleBtn'),
+  satCard: document.getElementById('satCard'),
+  satMsgText: document.getElementById('satMsgText'),
+  satCharCount: document.getElementById('satCharCount'),
+  satTranslation: document.getElementById('satTranslation'),
+  satWindowBadge: document.getElementById('satWindowBadge'),
+  satOutput: document.getElementById('satOutput'),
+
+  // Map
+  mapToggleBtn: document.getElementById('mapToggleBtn'),
+  mapPanel: document.getElementById('mapPanel'),
+  mapCoordDisplay: document.getElementById('mapCoordDisplay'),
+};
+
+// ─── UTILITY FUNCTIONS ─────────────────────────────────────────
 
 function wmo(code) {
   return CONFIG.WMO_CODES[code] || ['Unknown', '🌡'];
@@ -71,7 +117,7 @@ function convertWind(kmh) {
     case 'mph': return (kmh * 0.621371).toFixed(1);
     case 'kn': return (kmh * 0.539957).toFixed(1);
     case 'ms': return (kmh / 3.6).toFixed(1);
-    default: return kmh;
+    default: return kmh.toFixed(1);
   }
 }
 
@@ -79,118 +125,128 @@ function convertDist(km) {
   return STATE.distUnit === 'mi' ? (km * 0.621371).toFixed(1) : km.toFixed(1);
 }
 
-function showMsg(html) {
-  const msg = document.getElementById('message');
-  const weather = document.getElementById('weather');
-  msg.innerHTML = html || '<span class="msg-icon">🌤</span><div class="msg-title">Welcome to Meteoron</div>';
-  msg.style.display = 'block';
-  weather.classList.remove('visible');
+// Enhanced fetch with timeout
+async function fetchWithTimeout(url, options = {}, timeout = 5000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
-// ──────────────────────────────────────────────────────────────────────────
-// TAB SWITCHING
-// ──────────────────────────────────────────────────────────────────────────
+// Debounce utility
+function debounce(fn, delay) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}
 
-const tabCity = document.getElementById('tabCity');
-const tabCoords = document.getElementById('tabCoords');
-const cityRow = document.getElementById('cityRow');
-const coordRow = document.getElementById('coordRow');
-const coordHint = document.getElementById('coordHint');
-const suggestBox = document.getElementById('suggestions');
+function setLoading(isLoading) {
+  STATE.loading = isLoading;
+  // Visual feedback: could add spinner class
+}
 
-tabCity.addEventListener('click', () => {
-  tabCity.classList.add('active');
-  tabCoords.classList.remove('active');
-  cityRow.classList.remove('hidden');
-  coordRow.classList.add('hidden');
-  coordHint.classList.add('hidden');
-  suggestBox.classList.remove('show');
-});
+function showMsg(html) {
+  DOM.message.innerHTML = html || '<span class="msg-icon">🌤</span><div class="msg-title">Welcome to Meteoron</div>';
+  DOM.message.style.display = 'block';
+  DOM.weather.classList.remove('visible');
+}
 
-tabCoords.addEventListener('click', () => {
-  tabCoords.classList.add('active');
-  tabCity.classList.remove('active');
-  coordRow.classList.remove('hidden');
-  coordHint.classList.remove('hidden');
-  cityRow.classList.add('hidden');
-  suggestBox.classList.remove('show');
-});
+// ─── TAB SWITCHING ─────────────────────────────────────────────
 
-// ──────────────────────────────────────────────────────────────────────────
-// COORDINATE SEARCH
-// ──────────────────────────────────────────────────────────────────────────
+function switchToTab(isCity) {
+  if (isCity) {
+    DOM.tabCity.classList.add('active');
+    DOM.tabCoords.classList.remove('active');
+    DOM.cityRow.classList.remove('hidden');
+    DOM.coordRow.classList.add('hidden');
+    DOM.coordHint.classList.add('hidden');
+  } else {
+    DOM.tabCoords.classList.add('active');
+    DOM.tabCity.classList.remove('active');
+    DOM.coordRow.classList.remove('hidden');
+    DOM.coordHint.classList.remove('hidden');
+    DOM.cityRow.classList.add('hidden');
+  }
+  DOM.suggestBox.classList.remove('show');
+}
 
-const latInput = document.getElementById('latInput');
-const lonInput = document.getElementById('lonInput');
+DOM.tabCity.addEventListener('click', () => switchToTab(true));
+DOM.tabCoords.addEventListener('click', () => switchToTab(false));
 
-document.getElementById('coordBtn').addEventListener('click', doCoordSearch);
-
-[latInput, lonInput].forEach(inp => {
-  inp.addEventListener('keydown', e => { if (e.key === 'Enter') doCoordSearch(); });
-  inp.addEventListener('input', () => inp.classList.remove('error'));
-});
+// ─── COORDINATE SEARCH ────────────────────────────────────────
 
 async function doCoordSearch() {
-  const latVal = latInput.value.trim();
-  const lonVal = lonInput.value.trim();
+  const latVal = DOM.latInput.value.trim();
+  const lonVal = DOM.lonInput.value.trim();
   let valid = true;
 
   const lat = parseFloat(latVal);
   const lon = parseFloat(lonVal);
 
-  if (latVal === '' || isNaN(lat) || lat < -90 || lat > 90) {
-    latInput.classList.add('error');
-    valid = false;
-  }
-  if (lonVal === '' || isNaN(lon) || lon < -180 || lon > 180) {
-    lonInput.classList.add('error');
-    valid = false;
-  }
-  if (!valid) return;
+  DOM.latInput.classList.toggle('error', latVal === '' || isNaN(lat) || lat < -90 || lat > 90);
+  DOM.lonInput.classList.toggle('error', lonVal === '' || isNaN(lon) || lon < -180 || lon > 180);
+
+  if (DOM.latInput.classList.contains('error') || DOM.lonInput.classList.contains('error')) return;
 
   showMsg('<span class="m3-progress"></span> Resolving location…');
 
   let name = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-    const d = await r.json();
-    if (d?.address) {
-      const place = d.address.city || d.address.town || d.address.village ||
-                    d.address.county || d.address.state_district || d.address.state;
-      if (place) name = place + (d.address.country ? ', ' + d.address.country : '');
+    const data = await fetchWithTimeout(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+      {},
+      CONFIG.API_TIMEOUTS.REVERSE
+    );
+    if (data?.address) {
+      const place = data.address.city || data.address.town || data.address.village ||
+                    data.address.county || data.address.state_district || data.address.state;
+      if (place) name = place + (data.address.country ? ', ' + data.address.country : '');
     }
-  } catch {}
+  } catch (err) {
+    console.warn('Reverse geocoding failed:', err.message);
+  }
 
   fetchWeather(lat, lon, name);
 }
 
-// ──────────────────────────────────────────────────────────────────────────
-// GEOCODING & CITY SEARCH
-// ──────────────────────────────────────────────────────────────────────────
+[DOM.latInput, DOM.lonInput].forEach(inp => {
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') doCoordSearch(); });
+  inp.addEventListener('input', () => inp.classList.remove('error'));
+});
+
+document.getElementById('coordBtn').addEventListener('click', doCoordSearch);
+
+// ─── GEOCODING & CITY SEARCH ──────────────────────────────────
 
 let suggestTimeout;
-const cityInput = document.getElementById('cityInput');
 
-cityInput.addEventListener('input', () => {
-  clearTimeout(suggestTimeout);
-  const q = cityInput.value.trim();
+DOM.cityInput.addEventListener('input', debounce(async () => {
+  const q = DOM.cityInput.value.trim();
   if (q.length < 2) {
-    suggestBox.innerHTML = '';
-    suggestBox.classList.remove('show');
+    DOM.suggestBox.innerHTML = '';
+    DOM.suggestBox.classList.remove('show');
     return;
   }
-  suggestTimeout = setTimeout(() => geocode(q, true), 300);
-});
+  await geocode(q, true);
+}, CONFIG.DEBOUNCE_DELAY));
 
 document.addEventListener('click', e => {
   if (!e.target.closest('.m3-search-field')) {
-    suggestBox.classList.remove('show');
+    DOM.suggestBox.classList.remove('show');
   }
 });
 
-cityInput.addEventListener('keydown', e => {
+DOM.cityInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
-    suggestBox.classList.remove('show');
+    DOM.suggestBox.classList.remove('show');
     doSearch();
   }
 });
@@ -200,29 +256,36 @@ document.getElementById('locBtn').addEventListener('click', useLocation);
 
 async function geocode(q, showSuggestions) {
   try {
-    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=en&format=json`);
-    const d = await r.json();
-    if (!d.results?.length) {
+    const data = await fetchWithTimeout(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=${CONFIG.SUGGESTION_COUNT}&language=en&format=json`,
+      {},
+      CONFIG.API_TIMEOUTS.GEOCODING
+    );
+
+    if (!data.results?.length) {
       if (showSuggestions) {
-        suggestBox.innerHTML = '';
-        suggestBox.classList.remove('show');
+        DOM.suggestBox.innerHTML = '';
+        DOM.suggestBox.classList.remove('show');
       }
       return null;
     }
+
     if (showSuggestions) {
-      suggestBox.innerHTML = d.results
-        .map((loc, i) => `
+      DOM.suggestBox.innerHTML = data.results
+        .map(loc => `
           <div class="suggestion-item" data-lat="${loc.latitude}" data-lon="${loc.longitude}" data-name="${esc(loc.name)}" data-country="${esc(loc.country || '')}">
             <span>${esc(loc.name)}${loc.admin1 ? ', ' + esc(loc.admin1) : ''}</span>
             <span class="country">${esc(loc.country || '')}</span>
           </div>
         `)
         .join('');
-      suggestBox.classList.add('show');
-      suggestBox.querySelectorAll('.suggestion-item').forEach(el => {
+      
+      DOM.suggestBox.classList.add('show');
+      
+      DOM.suggestBox.querySelectorAll('.suggestion-item').forEach(el => {
         el.addEventListener('click', () => {
-          cityInput.value = el.dataset.name;
-          suggestBox.classList.remove('show');
+          DOM.cityInput.value = el.dataset.name;
+          DOM.suggestBox.classList.remove('show');
           fetchWeather(
             parseFloat(el.dataset.lat),
             parseFloat(el.dataset.lon),
@@ -231,22 +294,28 @@ async function geocode(q, showSuggestions) {
         });
       });
     }
-    return d.results;
-  } catch (e) {
-    console.error('Geocoding error:', e);
+    return data.results;
+  } catch (err) {
+    console.error('Geocoding error:', err);
+    if (showSuggestions) {
+      showMsg('<span class="msg-icon">⚠️</span><div class="msg-title">Search failed</div><div class="msg-sub">Network error. Please try again.</div>');
+    }
     return null;
   }
 }
 
 async function doSearch() {
-  const q = cityInput.value.trim();
+  const q = DOM.cityInput.value.trim();
   if (!q) return;
+  
   showMsg('<span class="m3-progress"></span> Finding location…');
   const results = await geocode(q, false);
+  
   if (!results?.length) {
     showMsg('<span class="msg-icon">❓</span><div class="msg-title">City not found</div><div class="msg-sub">Try a different name</div>');
     return;
   }
+  
   const loc = results[0];
   fetchWeather(loc.latitude, loc.longitude, loc.name + (loc.country ? ', ' + loc.country : ''));
 }
@@ -256,28 +325,36 @@ function useLocation() {
     showMsg('<span class="msg-icon">⚠️</span><div class="msg-title">Geolocation unavailable</div>');
     return;
   }
+  
   showMsg('<span class="m3-progress"></span> Detecting your location…');
+  
   navigator.geolocation.getCurrentPosition(
     async pos => {
       const { latitude, longitude } = pos.coords;
       let name = `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
+      
       try {
-        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-        const d = await r.json();
-        name = d.address?.city || d.address?.town || d.address?.village || d.address?.county || name;
-        if (d.address?.country) name += ', ' + d.address.country;
-      } catch {}
+        const data = await fetchWithTimeout(
+          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+          {},
+          CONFIG.API_TIMEOUTS.REVERSE
+        );
+        name = data.address?.city || data.address?.town || data.address?.village || data.address?.county || name;
+        if (data.address?.country) name += ', ' + data.address.country;
+      } catch (err) {
+        console.warn('Reverse geocoding failed:', err);
+      }
+      
       fetchWeather(latitude, longitude, name);
     },
     () => showMsg('<span class="msg-icon">🚫</span><div class="msg-title">Location access denied</div><div class="msg-sub">Please search manually</div>')
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────────
-// WEATHER FETCHING
-// ──────────────────────────────────────────────────────────────────────────
+// ─── WEATHER FETCHING ────────────────────────────────────────
 
 async function fetchWeather(lat, lon, cityName) {
+  setLoading(true);
   showMsg('<span class="m3-progress"></span> Loading forecast…');
   STATE.currentLat = lat;
   STATE.currentLon = lon;
@@ -294,20 +371,25 @@ async function fetchWeather(lat, lon, cityName) {
       timezone: 'auto',
       forecast_days: 7,
     });
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-    const d = await r.json();
-    STATE.currentData = d;
-    renderWeather(d, cityName, lat, lon);
+    
+    const data = await fetchWithTimeout(
+      `https://api.open-meteo.com/v1/forecast?${params}`,
+      {},
+      CONFIG.API_TIMEOUTS.WEATHER
+    );
+    
+    STATE.currentData = data;
+    renderWeather(data, cityName, lat, lon);
     showSatellitePanel();
   } catch (err) {
     console.error('Weather fetch error:', err);
     showMsg('<span class="msg-icon">⚠️</span><div class="msg-title">Failed to load weather</div><div class="msg-sub">Check your connection and try again</div>');
+  } finally {
+    setLoading(false);
   }
 }
 
-// ──────────────────────────────────────────────────────────────────────────
-// WEATHER RENDERING
-// ──────────────────────────────────────────────────────────────────────────
+// ─── WEATHER RENDERING ────────────────────────────────────────
 
 function renderWeather(d, cityName, lat, lon) {
   const c = d.current;
@@ -320,7 +402,7 @@ function renderWeather(d, cityName, lat, lon) {
   const tempUnit = STATE.tempUnit === 'fahrenheit' ? '°F' : '°C';
   const windUnit = STATE.windUnit === 'mph' ? 'mph' : STATE.windUnit === 'kn' ? 'kn' : STATE.windUnit === 'ms' ? 'm/s' : 'km/h';
 
-  document.getElementById('currentCard').innerHTML = `
+  DOM.currentCard.innerHTML = `
     <div class="location-eyebrow">Current Conditions</div>
     <div class="city-name">${esc(cityName)}</div>
     <div class="coord-sub">${lat.toFixed(4)}°, ${lon.toFixed(4)}° · ${esc(d.timezone)}</div>
@@ -356,12 +438,15 @@ function renderWeather(d, cityName, lat, lon) {
   const hourly = d.hourly;
   const hourlyRows = [];
   let count = 0;
-  for (let i = 0; i < hourly.time.length && count < 24; i++) {
+  
+  for (let i = 0; i < hourly.time.length && count < CONFIG.HOURLY_COUNT; i++) {
     const t = new Date(hourly.time[i]);
     if (t < now) continue;
+    
     const isNow = count === 0;
     const [, hIcon] = wmo(hourly.weather_code[i]);
     const hTemp = convertTemp(hourly.temperature_2m[i]);
+    
     hourlyRows.push(`
       <div class="hour-card${isNow ? ' now' : ''}">
         <div class="h-time">${isNow ? 'Now' : formatHour(t)}</div>
@@ -372,17 +457,20 @@ function renderWeather(d, cityName, lat, lon) {
     `);
     count++;
   }
-  document.getElementById('hourlyRow').innerHTML = hourlyRows.join('');
+  
+  DOM.hourlyRow.innerHTML = hourlyRows.join('');
 
   // Daily
   const daily = d.daily;
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
   const dayItems = daily.time.map((t, i) => {
     const dt = new Date(t + 'T12:00:00');
     const isToday = i === 0;
     const [dLabel, dIcon] = wmo(daily.weather_code[i]);
     const dHi = convertTemp(daily.temperature_2m_max[i]);
     const dLo = convertTemp(daily.temperature_2m_min[i]);
+    
     return `
       <div class="day-row${isToday ? ' today' : ''}">
         <div class="day-name">${isToday ? 'Today' : dayNames[dt.getDay()]}</div>
@@ -396,7 +484,8 @@ function renderWeather(d, cityName, lat, lon) {
       </div>
     `;
   });
-  document.getElementById('dayList').innerHTML = dayItems.join('');
+  
+  DOM.dayList.innerHTML = dayItems.join('');
 
   // Detail cards
   const uv = daily.uv_index_max[0];
@@ -405,7 +494,7 @@ function renderWeather(d, cityName, lat, lon) {
   const ws = convertWind(daily.wind_speed_10m_max[0]);
   const wsW = Math.min((ws / 80) * 100, 100);
 
-  document.getElementById('detailGrid').innerHTML = `
+  DOM.detailGrid.innerHTML = `
     <div class="detail-card">
       <div class="dc-label">UV Index — Today</div>
       <div class="dc-val">${uv}</div>
@@ -420,39 +509,28 @@ function renderWeather(d, cityName, lat, lon) {
     </div>
   `;
 
-  const msg = document.getElementById('message');
-  const weather = document.getElementById('weather');
-  msg.style.display = 'none';
-  weather.classList.add('visible');
+  DOM.message.style.display = 'none';
+  DOM.weather.classList.add('visible');
 }
 
-// ──────────────────────────────────────────────────────────────────────────
-// SETTINGS
-// ──────────────────────────────────────────────────────────────────────────
+// ─── SETTINGS ──────────────────────────────────────────────────
 
-const themeToggleBtn = document.getElementById('themeToggleBtn');
-const themeIcon = document.getElementById('themeIcon');
-const settingsBtn = document.getElementById('settingsBtn');
-const settingsScrim = document.getElementById('settingsScrim');
-const settingsDrawer = document.getElementById('settingsDrawer');
-const settingsCloseBtn = document.getElementById('settingsCloseBtn');
-
-themeToggleBtn.addEventListener('click', () => {
+DOM.themeToggleBtn.addEventListener('click', () => {
   STATE.theme = STATE.theme === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', STATE.theme);
-  themeIcon.textContent = STATE.theme === 'dark' ? 'dark_mode' : 'light_mode';
+  DOM.themeIcon.textContent = STATE.theme === 'dark' ? 'dark_mode' : 'light_mode';
   localStorage.setItem('theme', STATE.theme);
 });
 
-settingsBtn.addEventListener('click', () => {
-  settingsScrim.classList.add('open');
-  settingsDrawer.classList.add('open');
+DOM.settingsBtn.addEventListener('click', () => {
+  DOM.settingsScrim.classList.add('open');
+  DOM.settingsDrawer.classList.add('open');
 });
 
-[settingsCloseBtn, settingsScrim].forEach(el => {
+[document.getElementById('settingsCloseBtn'), DOM.settingsScrim].forEach(el => {
   el.addEventListener('click', () => {
-    settingsScrim.classList.remove('open');
-    settingsDrawer.classList.remove('open');
+    DOM.settingsScrim.classList.remove('open');
+    DOM.settingsDrawer.classList.remove('open');
   });
 });
 
@@ -468,10 +546,12 @@ settingsBtn.addEventListener('click', () => {
       if (groupId === 'themeGroup') {
         STATE.theme = e.target.dataset.val;
         document.documentElement.setAttribute('data-theme', STATE.theme);
-        themeIcon.textContent = STATE.theme === 'dark' ? 'dark_mode' : 'light_mode';
+        DOM.themeIcon.textContent = STATE.theme === 'dark' ? 'dark_mode' : 'light_mode';
       }
 
-      if (STATE.currentData) renderWeather(STATE.currentData, STATE.currentCity, STATE.currentLat, STATE.currentLon);
+      if (STATE.currentData) {
+        renderWeather(STATE.currentData, STATE.currentCity, STATE.currentLat, STATE.currentLon);
+      }
     });
   });
 });
@@ -480,34 +560,24 @@ settingsBtn.addEventListener('click', () => {
 const savedTheme = localStorage.getItem('theme') || 'dark';
 STATE.theme = savedTheme;
 document.documentElement.setAttribute('data-theme', savedTheme);
-themeIcon.textContent = savedTheme === 'dark' ? 'dark_mode' : 'light_mode';
+DOM.themeIcon.textContent = savedTheme === 'dark' ? 'dark_mode' : 'light_mode';
 
-// ──────────────────────────────────────────────────────────────────────────
-// MAP
-// ──────────────────────────────────────────────────────────────────────────
+// ─── MAP ────────────────────────────────────────────────────────
 
-const mapToggleBtn = document.getElementById('mapToggleBtn');
-const mapPanel = document.getElementById('mapPanel');
-
-mapToggleBtn.addEventListener('click', () => {
-  mapPanel.classList.toggle('open');
-  mapToggleBtn.classList.toggle('open');
+DOM.mapToggleBtn.addEventListener('click', () => {
+  DOM.mapPanel.classList.toggle('open');
+  DOM.mapToggleBtn.classList.toggle('open');
 });
 
-// ──────────────────────────────────────────────────────────────────────────
-// SATELLITE MESSAGE PANEL
-// ──────────────────────────────────────────────────────────────────────────
+// ─── SATELLITE MESSAGE PANEL ───────────────────────────────────
 
 function showSatellitePanel() {
-  document.getElementById('satToggleRow').classList.add('visible');
+  DOM.satToggleRow.classList.add('visible');
 }
 
-const satToggleBtn = document.getElementById('satToggleBtn');
-const satCard = document.getElementById('satCard');
-
-satToggleBtn.addEventListener('click', () => {
-  satCard.classList.toggle('open');
-  satToggleBtn.classList.toggle('open');
+DOM.satToggleBtn.addEventListener('click', () => {
+  DOM.satCard.classList.toggle('open');
+  DOM.satToggleBtn.classList.toggle('open');
 });
 
 document.getElementById('satGenerateBtn').addEventListener('click', generateSatMessage);
@@ -530,28 +600,27 @@ function generateSatMessage() {
   if (profile === 'sailing') {
     message += `Humidity:${c.relative_humidity_2m}% Press:${c.surface_pressure}hPa`;
   } else if (profile === 'alpine') {
-    message += `UV:${weather.daily.uv_index_max[0]} Humidity:${c.relative_humidity_2m}%`;
+    message += `UV:${Math.round(weather.daily.uv_index_max[0])} Humidity:${c.relative_humidity_2m}%`;
   }
 
   const truncated = message.substring(0, charLimit);
-  document.getElementById('satMsgText').value = truncated;
-  document.getElementById('satCharCount').textContent = `${truncated.length} / ${charLimit}`;
-  document.getElementById('satTranslation').textContent = `Weather update: ${Math.round(tempVal)}° with ${condLabel.toLowerCase()}, wind at ${windVal} ${windUnit}.`;
-  document.getElementById('satOutput').classList.add('show');
+  DOM.satMsgText.value = truncated;
+  DOM.satCharCount.textContent = `${truncated.length} / ${charLimit}`;
+  DOM.satTranslation.textContent = `Weather update: ${Math.round(tempVal)}° with ${condLabel.toLowerCase()}, wind at ${windVal} ${windUnit}.`;
+  DOM.satOutput.classList.add('show');
 
-  const charCount = document.getElementById('satCharCount');
-  charCount.classList.remove('warn', 'over');
-  if (truncated.length > charLimit * 0.9) charCount.classList.add('warn');
-  if (truncated.length >= charLimit) charCount.classList.add('over');
+  DOM.satCharCount.classList.remove('warn', 'over');
+  if (truncated.length > charLimit * 0.9) DOM.satCharCount.classList.add('warn');
+  if (truncated.length >= charLimit) DOM.satCharCount.classList.add('over');
 }
 
 function copySatMessage() {
-  const msg = document.getElementById('satMsgText').value;
+  const msg = DOM.satMsgText.value;
   navigator.clipboard.writeText(msg).then(() => {
     const feedback = document.getElementById('satCopyFeedback');
     feedback.classList.add('show');
     setTimeout(() => feedback.classList.remove('show'), 2000);
-  });
+  }).catch(err => console.error('Copy failed:', err));
 }
 
 // Initialize
