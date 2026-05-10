@@ -395,59 +395,6 @@ body{
 .coord-display strong{color:var(--md-primary);font-weight:600}
 .coord-click-hint{color:var(--md-on-surface-variant);font-size:.6875rem}
 
-/* Mapbox GL overrides */
-.mapboxgl-map { font-family: 'Inter', sans-serif !important; }
-.mapboxgl-ctrl-group {
-  background: var(--md-surface-container-high) !important;
-  border: 1px solid var(--md-outline-variant) !important;
-  border-radius: var(--shape-md) !important;
-  box-shadow: none !important;
-}
-.mapboxgl-ctrl-group button {
-  background-color: transparent !important;
-  width: 36px !important; height: 36px !important;
-}
-.mapboxgl-ctrl-group button + button { border-top: 1px solid var(--md-outline-variant) !important; }
-.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon,
-.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon,
-.mapboxgl-ctrl-compass .mapboxgl-ctrl-icon { filter: invert(0.5) sepia(1) saturate(3) hue-rotate(150deg); }
-.mapboxgl-ctrl-attrib {
-  background: color-mix(in srgb,var(--md-surface-container) 90%,transparent) !important;
-  font-size: .6rem !important;
-  border-radius: var(--shape-sm) !important;
-}
-.mapboxgl-ctrl-attrib a { color: var(--md-primary) !important; }
-/* Custom marker popup */
-.mapboxgl-popup-content {
-  background: var(--md-surface-container-highest) !important;
-  color: var(--md-on-surface) !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: .75rem !important;
-  border-radius: var(--shape-lg) !important;
-  border: 1px solid var(--md-outline-variant) !important;
-  box-shadow: 0 8px 30px rgba(0,0,0,.3) !important;
-  padding: 14px 18px !important;
-  min-width: 160px;
-}
-.mapboxgl-popup-tip { display: none !important; }
-.mapboxgl-popup-close-button {
-  color: var(--md-on-surface-variant) !important;
-  font-size: 1.1rem !important;
-  right: 6px !important; top: 4px !important;
-  background: transparent !important;
-}
-/* Marker dot */
-.mb-marker {
-  width: 16px; height: 16px;
-  background: var(--md-primary);
-  border: 2.5px solid #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--md-primary) 30%, transparent);
-  cursor: pointer;
-  transition: transform .15s ease;
-}
-.mb-marker:hover { transform: scale(1.2); }
-
 /* ── WEATHER CARDS ── */
 #weather{display:none}
 #weather.visible{display:block;animation:fadeIn var(--dur-m) var(--ease) both}
@@ -573,12 +520,10 @@ body{
 .data-credit a{color:var(--md-primary);text-decoration:none}
 .data-credit a:hover{text-decoration:underline}
 
-
 /* ════════════════════════════════════════════
    SATELLITE MESSAGE PANEL
    ════════════════════════════════════════════ */
 
-/* Toggle button row */
 .sat-toggle-row { margin-bottom:16px; display:none; }
 .sat-toggle-row.visible { display:block; }
 
@@ -609,7 +554,6 @@ body{
 }
 .m3-sat-toggle.open .sat-toggle-icon { transform:rotate(180deg); }
 
-/* Panel card */
 .sat-card {
   background:var(--md-surface-container);
   border-radius:var(--shape-xl);
@@ -620,7 +564,6 @@ body{
 }
 .sat-card.open { display:flex; animation:fadeIn var(--dur-m) var(--ease) both; }
 
-/* Panel sections */
 .sat-section {
   padding:16px 20px;
   border-bottom:1px solid var(--md-outline-variant);
@@ -632,7 +575,6 @@ body{
   margin-bottom:12px;
 }
 
-/* Profile & device selectors */
 .sat-selectors {
   display:flex; gap:12px; flex-wrap:wrap;
 }
@@ -642,21 +584,16 @@ body{
   margin-bottom:6px; font-weight:500;
 }
 
-/* Generate button */
 .sat-generate-row {
   display:flex; justify-content:flex-end; padding:14px 20px;
   background:var(--md-surface-container-high);
   border-bottom:1px solid var(--md-outline-variant);
 }
 
-/* Output area */
 .sat-output { padding:20px; display:none; flex-direction:column; gap:16px; }
 .sat-output.show { display:flex; }
 
-/* Technical message box */
-.sat-msg-box {
-  position:relative;
-}
+.sat-msg-box { position:relative; }
 .sat-msg-label {
   font-size:.6875rem; font-weight:600; letter-spacing:.1em;
   text-transform:uppercase; color:var(--md-on-surface-variant);
@@ -709,7 +646,6 @@ body{
 }
 .sat-copy-feedback.show { opacity:1; }
 
-/* Platform hint */
 .sat-platform-hint {
   font-size:.75rem; color:var(--md-on-surface-variant);
   display:flex; align-items:flex-start; gap:6px;
@@ -717,7 +653,6 @@ body{
   border-radius:var(--shape-md); padding:10px 14px;
 }
 
-/* Plain language translation */
 .sat-translation {
   background:color-mix(in srgb,var(--md-primary-container) 40%,transparent);
   border-left:3px solid var(--md-primary);
@@ -734,7 +669,6 @@ body{
   line-height:1.65;
 }
 
-/* Window badge */
 .sat-window-badge {
   display:inline-flex; align-items:center; gap:4px;
   background:var(--md-secondary-container);
@@ -744,11 +678,9 @@ body{
   margin-left:8px;
 }
 
-/* Animations */
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Responsive */
 @media(max-width:520px){
   .app-bar-sub{display:none}
   .coord-fields{flex-direction:column}
@@ -775,7 +707,6 @@ body{
   </div>
 </header>
 
-<!-- Settings drawer -->
 <div class="settings-scrim" id="settingsScrim"></div>
 <div class="settings-drawer" id="settingsDrawer">
   <div class="settings-drawer-header">
@@ -819,7 +750,6 @@ body{
 
 <main class="app">
 
-  <!-- Search -->
   <div style="margin-bottom:16px">
     <div class="m3-tab-bar">
       <button class="m3-tab active" id="tabCity">
@@ -864,7 +794,6 @@ body{
     </div>
   </div>
 
-  <!-- Map toggle -->
   <div class="map-toggle-row">
     <button class="m3-map-toggle" id="mapToggleBtn">
       <span class="material-symbols-rounded">map</span>
@@ -873,7 +802,6 @@ body{
     </button>
   </div>
 
-  <!-- Map panel -->
   <div class="map-card" id="mapPanel">
     <div class="map-layer-bar">
       <span class="layer-bar-label">Layer:</span>
@@ -904,14 +832,12 @@ body{
     </div>
   </div>
 
-  <!-- Welcome message -->
   <div id="message">
     <span class="msg-icon">🌤</span>
     <div class="msg-title">Welcome to Meteoron</div>
     <div class="msg-sub">Search for a city, enter coordinates, or click the map to get started.</div>
   </div>
 
-  <!-- Weather content -->
   <div id="weather">
     <div class="current-card" id="currentCard"></div>
     <div class="section-label">Hourly — next 24 hours</div>
@@ -920,7 +846,6 @@ body{
     <div class="day-list" id="dayList"></div>
     <div class="detail-grid" id="detailGrid"></div>
 
-    <!-- Satellite message toggle -->
     <div class="sat-toggle-row" id="satToggleRow">
       <button class="m3-sat-toggle" id="satToggleBtn">
         <span class="material-symbols-rounded">satellite_alt</span>
@@ -929,10 +854,7 @@ body{
       </button>
     </div>
 
-    <!-- Satellite message panel -->
     <div class="sat-card" id="satCard">
-
-      <!-- Step 1: Profile & Device -->
       <div class="sat-section">
         <div class="sat-section-title">Step 1 — Profile &amp; Device</div>
         <div class="sat-selectors">
@@ -954,16 +876,13 @@ body{
         </div>
       </div>
 
-      <!-- Step 2: Generate -->
       <div class="sat-generate-row">
         <button class="m3-btn-filled" id="satGenerateBtn">
           <span class="material-symbols-rounded">send</span> Generate Message
         </button>
       </div>
 
-      <!-- Step 3: Output -->
       <div class="sat-output" id="satOutput">
-
         <div class="sat-msg-box">
           <div class="sat-msg-label">
             <span>Technical Message <span class="sat-window-badge" id="satWindowBadge">24H</span></span>
@@ -980,14 +899,13 @@ body{
 
         <div class="sat-platform-hint">
           <span class="material-symbols-rounded" style="font-size:1rem;flex-shrink:0;margin-top:1px">info</span>
-          <span>Paste into <a href="https://explore.garmin.com" target="_blank" style="color:var(--md-primary)">Garmin Explore</a> or the <strong>SPOT Messenger</strong> app on your phone, then send to your contact's satellite device address.</span>
+          <span>Paste into <a href="https://explore.garmin.com" target="_blank" style="color:var(--md-primary)">Garmin Explore</a> or the <strong>SPOT Messenger</strong> app on your phone.</span>
         </div>
 
         <div class="sat-translation">
           <div class="sat-translation-label">Plain Language — what you're sending</div>
           <div class="sat-translation-text" id="satTranslation"></div>
         </div>
-
       </div>
     </div>
 
@@ -1000,276 +918,146 @@ body{
 
 </main>
 
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 <script>
-'use strict';
+// ════════════════════════════════════════════════════════════════════════════
+// METEORON — Complete JavaScript Implementation
+// ════════════════════════════════════════════════════════════════════════════
 
-const OWM_PROXY = 'https://rapid-paper-a152meteoron-owm-proxy.crokano.workers.dev';
-
-// ════════════════════════════════════════════
-// SUN & MOON CALCULATIONS
-// ════════════════════════════════════════════
-
-// Solar declination & equation of time → sunrise/sunset in decimal hours (UTC)
-// Returns {sunrise, sunset} in local decimal hours for given date/lat/lon
-function getSunTimes(date, lat, lon) {
-  const rad = Math.PI / 180;
-  const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000);
-  const B = (360 / 365) * (dayOfYear - 81) * rad;
-  const decl = Math.asin(Math.sin(23.45 * rad) * Math.sin(B));
-  const eot = 9.87 * Math.sin(2*B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B); // minutes
-  const solarNoon = 12 - (lon / 15) - (eot / 60); // UTC decimal hours
-
-  const cosH = (Math.cos(90.833 * rad) - Math.sin(lat * rad) * Math.sin(decl))
-               / (Math.cos(lat * rad) * Math.cos(decl));
-
-  // Polar day / polar night guard
-  if (cosH > 1)  return { sunrise: null, sunset: null, polarNight: true };
-  if (cosH < -1) return { sunrise: null, sunset: null, polarDay:   true };
-
-  const H = Math.acos(cosH) / rad; // hour angle in degrees
-  const tzOffsetH = date.getTimezoneOffset() / -60; // browser offset — we'll use UTC+lon/15 approx instead
-  const lonOffsetH = lon / 15;
-
-  return {
-    sunrise: solarNoon - H / 15 + lonOffsetH,
-    sunset:  solarNoon + H / 15 + lonOffsetH,
-    polarNight: false,
-    polarDay:   false,
-  };
-}
-
-// Is a given Date object during night at lat/lon?
-function isNightAt(date, lat, lon) {
-  const sun = getSunTimes(date, lat, lon);
-  if (sun.polarDay)   return false;
-  if (sun.polarNight) return true;
-  // Convert date to decimal UTC hour + longitude offset approximation
-  const utcH = date.getUTCHours() + date.getUTCMinutes() / 60;
-  const localSolarH = ((utcH + lon / 15) % 24 + 24) % 24;
-  return localSolarH < sun.sunrise || localSolarH > sun.sunset;
-}
-
-// Moon phase (0–1) for a given Date
-// Reference new moon: Jan 6 2000 18:14 UTC
-function getMoonPhase(date) {
-  const knownNewMoon = new Date('2000-01-06T18:14:00Z');
-  const lunarCycle   = 29.53058867;
-  const elapsed = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
-  return ((elapsed % lunarCycle) + lunarCycle) % lunarCycle / lunarCycle; // 0–1
-}
-
-// Moon emoji from phase (0–1)
-function moonEmoji(phase) {
-  const emojis = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
-  return emojis[Math.round(phase * 8) % 8];
-}
-
-// Night icon: moon phase emoji
-function nightIcon(date) {
-  return moonEmoji(getMoonPhase(date));
-}
-
-// ════════════════════════════════════════════
-// WMO WEATHER CODES
-// ════════════════════════════════════════════
-// Day icons — standard
-const WMO = {
-  0:['Clear sky','☀️'],1:['Mainly clear','🌤'],2:['Partly cloudy','⛅'],
-  3:['Overcast','☁️'],45:['Foggy','🌫'],48:['Rime fog','🌫'],
-  51:['Light drizzle','🌦'],53:['Drizzle','🌦'],55:['Heavy drizzle','🌧'],
-  61:['Slight rain','🌧'],63:['Rain','🌧'],65:['Heavy rain','🌧'],
-  71:['Slight snow','🌨'],73:['Snow','❄️'],75:['Heavy snow','❄️'],
-  77:['Snow grains','🌨'],80:['Rain showers','🌦'],81:['Rain showers','🌦'],
-  82:['Heavy showers','⛈'],85:['Snow showers','🌨'],86:['Heavy snow showers','🌨'],
-  95:['Thunderstorm','⛈'],96:['Thunderstorm + hail','⛈'],99:['Severe thunderstorm','⛈'],
+const CONFIG = {
+  WMO_CODES: {
+    0: ['Clear sky', '☀️'], 1: ['Mainly clear', '🌤'], 2: ['Partly cloudy', '⛅'],
+    3: ['Overcast', '☁️'], 45: ['Foggy', '🌫'], 48: ['Rime fog', '🌫'],
+    51: ['Light drizzle', '🌦'], 53: ['Drizzle', '🌦'], 55: ['Heavy drizzle', '🌧'],
+    61: ['Slight rain', '🌧'], 63: ['Rain', '🌧'], 65: ['Heavy rain', '🌧'],
+    71: ['Slight snow', '🌨'], 73: ['Snow', '❄️'], 75: ['Heavy snow', '❄️'],
+    77: ['Snow grains', '🌨'], 80: ['Rain showers', '🌦'], 81: ['Rain showers', '🌦'],
+    82: ['Heavy showers', '⛈'], 85: ['Snow showers', '🌨'], 86: ['Heavy snow showers', '🌨'],
+    95: ['Thunderstorm', '⛈'], 96: ['Thunderstorm + hail', '⛈'], 99: ['Severe thunderstorm', '⛈'],
+  },
+  COMPASS_DIRS: ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'],
 };
 
-// Night variants — only clear/partly cloudy swap to moon; precipitation keeps day icons
-const WMO_NIGHT = {
-  0: '🌙',   // Clear sky → plain moon (will be replaced by phase emoji)
-  1: '🌙',   // Mainly clear
-  2: '☁️',   // Partly cloudy at night — cloud is fine
+const STATE = {
+  tempUnit: 'celsius',
+  windUnit: 'kmh',
+  distUnit: 'km',
+  theme: 'dark',
+  currentLat: null,
+  currentLon: null,
+  currentCity: null,
+  currentData: null,
+  map: null,
+  mapLayer: null,
 };
 
-// Returns [label, icon] — icon is time-aware
-// date: JS Date for this slot; lat/lon for sun calc; usePhase: show moon phase emoji
-function wmo(code, date, lat, lon) {
-  const entry = WMO[code] || ['Unknown','🌡'];
-  if (!date || lat === undefined) return entry; // fallback — no time context
+function wmo(code) { return CONFIG.WMO_CODES[code] || ['Unknown', '🌡']; }
+function esc(s) { return String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function degToCompass(deg) { const index = Math.round(deg / 22.5) % 16; return CONFIG.COMPASS_DIRS[index]; }
+function formatHour(date) { return date.toLocaleTimeString('en-US', { hour: 'numeric', meridiem: 'short' }); }
+function uvCategory(uv) { if (uv <= 2) return 'Low'; if (uv <= 5) return 'Moderate'; if (uv <= 7) return 'High'; if (uv <= 10) return 'Very High'; return 'Extreme'; }
+function convertTemp(celsius) { return STATE.tempUnit === 'fahrenheit' ? (celsius * 9/5) + 32 : celsius; }
+function convertWind(kmh) { switch(STATE.windUnit) { case 'mph': return (kmh * 0.621371).toFixed(1); case 'kn': return (kmh * 0.539957).toFixed(1); case 'ms': return (kmh / 3.6).toFixed(1); default: return kmh; } }
+function convertDist(km) { return STATE.distUnit === 'mi' ? (km * 0.621371).toFixed(1) : km.toFixed(1); }
 
-  if (isNightAt(date, lat, lon)) {
-    const nightVariant = WMO_NIGHT[code];
-    if (nightVariant !== undefined) {
-      // For clear/mainly clear, use the actual moon phase emoji
-      if (code === 0 || code === 1) {
-        return [entry[0], nightIcon(date)];
-      }
-      return [entry[0], nightVariant];
-    }
-    // Precipitation, fog, snow, storms — keep day icon, they're not sun-dependent
-  }
-  return entry;
+function showMsg(html) {
+  const msg = document.getElementById('message');
+  const weather = document.getElementById('weather');
+  msg.innerHTML = html || '<span class="msg-icon">🌤</span><div class="msg-title">Welcome to Meteoron</div>';
+  msg.style.display = 'block';
+  weather.classList.remove('visible');
 }
 
-const esc = s => String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-// ════════════════════════════════════════════
-// PREFERENCES
-// ════════════════════════════════════════════
-const DEFAULTS = {temp:'celsius',wind:'kmh',dist:'km',theme:'dark'};
-let prefs = {...DEFAULTS};
-
-function loadPrefs() {
-  try { prefs = {...DEFAULTS,...JSON.parse(localStorage.getItem('meteoron_prefs')||'{}')}; }
-  catch { prefs = {...DEFAULTS}; }
-}
-function savePrefs() { localStorage.setItem('meteoron_prefs',JSON.stringify(prefs)); }
-
-function applyPrefsToUI() {
-  ['tempUnitGroup','windUnitGroup','distUnitGroup','themeGroup'].forEach(g => {
-    const key = g === 'tempUnitGroup' ? 'temp' : g === 'windUnitGroup' ? 'wind' : g === 'distUnitGroup' ? 'dist' : 'theme';
-    setSegGroup(g, prefs[key]);
-  });
-  applyTheme(prefs.theme);
-}
-
-function setSegGroup(id, val) {
-  document.querySelectorAll(`#${id} .m3-seg-btn`).forEach(b => b.classList.toggle('active', b.dataset.val === val));
-}
-
-function bindSegGroup(id, key) {
-  document.querySelectorAll(`#${id} .m3-seg-btn`).forEach(btn => {
-    btn.addEventListener('click', () => {
-      prefs[key] = btn.dataset.val;
-      setSegGroup(id, btn.dataset.val);
-      savePrefs();
-      if (key === 'theme') { applyTheme(btn.dataset.val); updateThemeIcon(btn.dataset.val); if (mapInitialised) swapBaseLayer(btn.dataset.val); }
-      if (lastWeatherData) renderWeather(lastWeatherData, lastCityName, lastLat, lastLon);
-    });
-  });
-}
-
-// ════════════════════════════════════════════
-// THEME
-// ════════════════════════════════════════════
-function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); }
-function updateThemeIcon(t) { document.getElementById('themeIcon').textContent = t === 'dark' ? 'light_mode' : 'dark_mode'; }
-
-document.getElementById('themeToggleBtn').addEventListener('click', () => {
-  const next = prefs.theme === 'dark' ? 'light' : 'dark';
-  prefs.theme = next; applyTheme(next); updateThemeIcon(next);
-  setSegGroup('themeGroup', next); savePrefs();
-  if (mapInitialised) swapBaseLayer(next);
-});
-
-// ════════════════════════════════════════════
-// SETTINGS DRAWER
-// ════════════════════════════════════════════
-const settingsBtn    = document.getElementById('settingsBtn');
-const settingsDrawer = document.getElementById('settingsDrawer');
-const settingsScrim  = document.getElementById('settingsScrim');
-
-const openSettings  = () => { settingsDrawer.classList.add('open'); settingsScrim.classList.add('open'); settingsBtn.classList.add('active'); };
-const closeSettings = () => { settingsDrawer.classList.remove('open'); settingsScrim.classList.remove('open'); settingsBtn.classList.remove('active'); };
-
-settingsBtn.addEventListener('click', openSettings);
-document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
-settingsScrim.addEventListener('click', closeSettings);
-
-bindSegGroup('tempUnitGroup','temp');
-bindSegGroup('windUnitGroup','wind');
-bindSegGroup('distUnitGroup','dist');
-bindSegGroup('themeGroup','theme');
-
-// ════════════════════════════════════════════
-// UNIT HELPERS
-// ════════════════════════════════════════════
-const convertTemp = c => prefs.temp === 'fahrenheit' ? Math.round(c*9/5+32) : Math.round(c);
-const tempUnit    = () => prefs.temp === 'fahrenheit' ? '°F' : '°C';
-
-function convertWind(kmh) {
-  if (prefs.wind==='kn')  return (kmh*0.539957).toFixed(1);
-  if (prefs.wind==='ms')  return (kmh/3.6).toFixed(1);
-  if (prefs.wind==='mph') return (kmh*0.621371).toFixed(1);
-  return Math.round(kmh);
-}
-function windUnit() {
-  if (prefs.wind==='kn')  return 'kt';
-  if (prefs.wind==='ms')  return 'm/s';
-  if (prefs.wind==='mph') return 'mph';
-  return 'km/h';
-}
-const convertDist = km => prefs.dist==='mi' ? (km*0.621371).toFixed(1) : km.toFixed(1);
-const distUnit    = () => prefs.dist==='mi' ? 'mi' : 'km';
-function owmWindParam() {
-  if (prefs.wind==='kn')  return 'kn';
-  if (prefs.wind==='ms')  return 'ms';
-  if (prefs.wind==='mph') return 'mph';
-  return 'kmh';
-}
-
-// ════════════════════════════════════════════
-// TABS
-// ════════════════════════════════════════════
-const tabCity   = document.getElementById('tabCity');
+const tabCity = document.getElementById('tabCity');
 const tabCoords = document.getElementById('tabCoords');
-const cityRow   = document.getElementById('cityRow');
-const coordRow  = document.getElementById('coordRow');
+const cityRow = document.getElementById('cityRow');
+const coordRow = document.getElementById('coordRow');
 const coordHint = document.getElementById('coordHint');
+const suggestBox = document.getElementById('suggestions');
 
 tabCity.addEventListener('click', () => {
-  tabCity.classList.add('active'); tabCoords.classList.remove('active');
-  cityRow.classList.remove('hidden'); coordRow.classList.add('hidden'); coordHint.classList.add('hidden');
-  suggestBox.classList.remove('show');
-});
-tabCoords.addEventListener('click', () => {
-  tabCoords.classList.add('active'); tabCity.classList.remove('active');
-  coordRow.classList.remove('hidden'); coordHint.classList.remove('hidden'); cityRow.classList.add('hidden');
-  suggestBox.classList.remove('show');
+  tabCity.classList.add('active');
+  tabCoords.classList.remove('active');
+  cityRow.classList.remove('hidden');
+  coordRow.classList.add('hidden');
+  coordHint.classList.add('hidden');
 });
 
-// ════════════════════════════════════════════
-// GEOCODING
-// ════════════════════════════════════════════
-const cityInput  = document.getElementById('cityInput');
-const suggestBox = document.getElementById('suggestions');
+tabCoords.addEventListener('click', () => {
+  tabCoords.classList.add('active');
+  tabCity.classList.remove('active');
+  coordRow.classList.remove('hidden');
+  coordHint.classList.remove('hidden');
+  cityRow.classList.add('hidden');
+});
+
+const latInput = document.getElementById('latInput');
+const lonInput = document.getElementById('lonInput');
+
+document.getElementById('coordBtn').addEventListener('click', doCoordSearch);
+
+[latInput, lonInput].forEach(inp => {
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') doCoordSearch(); });
+  inp.addEventListener('input', () => inp.classList.remove('error'));
+});
+
+async function doCoordSearch() {
+  const latVal = latInput.value.trim();
+  const lonVal = lonInput.value.trim();
+  let valid = true;
+  const lat = parseFloat(latVal);
+  const lon = parseFloat(lonVal);
+  if (latVal === '' || isNaN(lat) || lat < -90 || lat > 90) { latInput.classList.add('error'); valid = false; }
+  if (lonVal === '' || isNaN(lon) || lon < -180 || lon > 180) { lonInput.classList.add('error'); valid = false; }
+  if (!valid) return;
+  showMsg('<span class="m3-progress"></span> Resolving location…');
+  let name = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+    const d = await r.json();
+    if (d?.address) {
+      const place = d.address.city || d.address.town || d.address.village || d.address.county || d.address.state_district || d.address.state;
+      if (place) name = place + (d.address.country ? ', ' + d.address.country : '');
+    }
+  } catch {}
+  fetchWeather(lat, lon, name);
+}
+
 let suggestTimeout;
+const cityInput = document.getElementById('cityInput');
 
 cityInput.addEventListener('input', () => {
   clearTimeout(suggestTimeout);
   const q = cityInput.value.trim();
-  if (q.length < 2) { suggestBox.innerHTML=''; suggestBox.classList.remove('show'); return; }
+  if (q.length < 2) { suggestBox.innerHTML = ''; suggestBox.classList.remove('show'); return; }
   suggestTimeout = setTimeout(() => geocode(q, true), 300);
 });
-document.addEventListener('click', e => { if (!e.target.closest('.m3-search-field')) suggestBox.classList.remove('show'); });
-cityInput.addEventListener('keydown', e => { if (e.key==='Enter') { suggestBox.classList.remove('show'); doSearch(); } });
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.m3-search-field')) { suggestBox.classList.remove('show'); }
+});
+
+cityInput.addEventListener('keydown', e => { if (e.key === 'Enter') { suggestBox.classList.remove('show'); doSearch(); } });
 document.getElementById('searchBtn').addEventListener('click', doSearch);
 document.getElementById('locBtn').addEventListener('click', useLocation);
 
-async function geocode(q, show) {
+async function geocode(q, showSuggestions) {
   try {
     const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=en&format=json`);
     const d = await r.json();
-    if (!d.results?.length) { if (show) { suggestBox.innerHTML=''; suggestBox.classList.remove('show'); } return null; }
-    if (show) {
-      suggestBox.innerHTML = d.results.map(loc =>
-        `<div class="suggestion-item" data-lat="${loc.latitude}" data-lon="${loc.longitude}" data-name="${esc(loc.name)}" data-country="${esc(loc.country||'')}">
-          <span>${esc(loc.name)}${loc.admin1?', '+esc(loc.admin1):''}</span>
-          <span class="country">${esc(loc.country||'')}</span>
-        </div>`
-      ).join('');
+    if (!d.results?.length) { if (showSuggestions) { suggestBox.innerHTML = ''; suggestBox.classList.remove('show'); } return null; }
+    if (showSuggestions) {
+      suggestBox.innerHTML = d.results.map((loc, i) => `<div class="suggestion-item" data-lat="${loc.latitude}" data-lon="${loc.longitude}" data-name="${esc(loc.name)}" data-country="${esc(loc.country || '')}"><span>${esc(loc.name)}${loc.admin1 ? ', ' + esc(loc.admin1) : ''}</span><span class="country">${esc(loc.country || '')}</span></div>`).join('');
       suggestBox.classList.add('show');
       suggestBox.querySelectorAll('.suggestion-item').forEach(el => {
         el.addEventListener('click', () => {
           cityInput.value = el.dataset.name;
           suggestBox.classList.remove('show');
-          fetchWeather(parseFloat(el.dataset.lat), parseFloat(el.dataset.lon), el.dataset.name+(el.dataset.country?', '+el.dataset.country:''));
+          fetchWeather(parseFloat(el.dataset.lat), parseFloat(el.dataset.lon), el.dataset.name + (el.dataset.country ? ', ' + el.dataset.country : ''));
         });
       });
     }
     return d.results;
-  } catch { return null; }
+  } catch (e) { console.error('Geocoding error:', e); return null; }
 }
 
 async function doSearch() {
@@ -1277,673 +1065,215 @@ async function doSearch() {
   if (!q) return;
   showMsg('<span class="m3-progress"></span> Finding location…');
   const results = await geocode(q, false);
-  if (!results?.length) { showMsg('❓','City not found','Try a different spelling or use the coordinates tab.'); return; }
+  if (!results?.length) { showMsg('<span class="msg-icon">❓</span><div class="msg-title">City not found</div><div class="msg-sub">Try a different name</div>'); return; }
   const loc = results[0];
-  fetchWeather(loc.latitude, loc.longitude, loc.name+(loc.country?', '+loc.country:''));
+  fetchWeather(loc.latitude, loc.longitude, loc.name + (loc.country ? ', ' + loc.country : ''));
 }
 
 function useLocation() {
-  if (!navigator.geolocation) { showMsg('⚠️','Not supported','Geolocation is not available in your browser.'); return; }
+  if (!navigator.geolocation) { showMsg('<span class="msg-icon">⚠️</span><div class="msg-title">Geolocation unavailable</div>'); return; }
   showMsg('<span class="m3-progress"></span> Detecting your location…');
   navigator.geolocation.getCurrentPosition(async pos => {
-    const {latitude:lat, longitude:lon} = pos.coords;
-    let name = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+    const { latitude, longitude } = pos.coords;
+    let name = `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
     try {
-      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
       const d = await r.json();
-      const p = d.address?.city||d.address?.town||d.address?.village||d.address?.county;
-      if (p) name = p+(d.address?.country?', '+d.address.country:'');
+      name = d.address?.city || d.address?.town || d.address?.village || d.address?.county || name;
+      if (d.address?.country) name += ', ' + d.address.country;
     } catch {}
-    fetchWeather(lat, lon, name);
-  }, () => showMsg('❌','Access denied','Location permission was denied. Please search manually.'));
+    fetchWeather(latitude, longitude, name);
+  }, () => showMsg('<span class="msg-icon">🚫</span><div class="msg-title">Location access denied</div><div class="msg-sub">Please search manually</div>'));
 }
-
-const latInput = document.getElementById('latInput');
-const lonInput = document.getElementById('lonInput');
-document.getElementById('coordBtn').addEventListener('click', doCoordSearch);
-[latInput,lonInput].forEach(i => {
-  i.addEventListener('keydown', e => { if (e.key==='Enter') doCoordSearch(); });
-  i.addEventListener('input', () => i.classList.remove('error'));
-});
-
-async function doCoordSearch() {
-  const lat = parseFloat(latInput.value), lon = parseFloat(lonInput.value);
-  let ok = true;
-  if (isNaN(lat)||lat<-90||lat>90)   { latInput.classList.add('error'); ok=false; }
-  if (isNaN(lon)||lon<-180||lon>180) { lonInput.classList.add('error'); ok=false; }
-  if (!ok) return;
-  showMsg('<span class="m3-progress"></span> Resolving location…');
-  let name = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
-  try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-    const d = await r.json();
-    const p = d.address?.city||d.address?.town||d.address?.village||d.address?.county||d.address?.state;
-    if (p) name = p+(d.address?.country?', '+d.address.country:'');
-  } catch {}
-  fetchWeather(lat, lon, name);
-}
-
-// ════════════════════════════════════════════
-// FETCH WEATHER
-// ════════════════════════════════════════════
-let lastWeatherData=null, lastCityName='', lastLat=0, lastLon=0;
 
 async function fetchWeather(lat, lon, cityName) {
   showMsg('<span class="m3-progress"></span> Loading forecast…');
+  STATE.currentLat = lat;
+  STATE.currentLon = lon;
+  STATE.currentCity = cityName;
   try {
     const params = new URLSearchParams({
-      latitude:lat, longitude:lon,
-      current:'temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure,visibility',
-      hourly:'temperature_2m,weather_code,precipitation_probability,wind_speed_10m,wind_direction_10m',
-      daily:'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant',
-      wind_speed_unit:owmWindParam(),
-      timezone:'auto', forecast_days:7,
+      latitude: lat, longitude: lon,
+      current: 'temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure,visibility',
+      hourly: 'temperature_2m,weather_code,precipitation_probability',
+      daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant',
+      wind_speed_unit: 'kmh',
+      timezone: 'auto',
+      forecast_days: 7,
     });
     const r = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
     const d = await r.json();
-    lastWeatherData=d; lastCityName=cityName; lastLat=lat; lastLon=lon;
+    STATE.currentData = d;
     renderWeather(d, cityName, lat, lon);
-  } catch {
-    showMsg('⚠️','Connection error','Could not load weather data. Please check your connection.');
+    document.getElementById('satToggleRow').classList.add('visible');
+  } catch (err) {
+    console.error('Weather fetch error:', err);
+    showMsg('<span class="msg-icon">⚠️</span><div class="msg-title">Failed to load weather</div><div class="msg-sub">Check your connection and try again</div>');
   }
 }
 
-// ════════════════════════════════════════════
-// RENDER
-// ════════════════════════════════════════════
 function renderWeather(d, cityName, lat, lon) {
   const c = d.current;
-  const [condLabel, condIcon] = wmo(c.weather_code, new Date(), lat, lon);
+  const [condLabel, condIcon] = wmo(c.weather_code);
   const windDir = degToCompass(c.wind_direction_10m);
+  const tempVal = convertTemp(c.temperature_2m);
+  const feelsVal = convertTemp(c.apparent_temperature);
+  const windVal = convertWind(c.wind_speed_10m);
+  const visVal = convertDist(c.visibility / 1000);
+  const tempUnit = STATE.tempUnit === 'fahrenheit' ? '°F' : '°C';
+  const windUnit = STATE.windUnit === 'mph' ? 'mph' : STATE.windUnit === 'kn' ? 'kn' : STATE.windUnit === 'ms' ? 'm/s' : 'km/h';
 
   document.getElementById('currentCard').innerHTML = `
     <div class="location-eyebrow">Current Conditions</div>
     <div class="city-name">${esc(cityName)}</div>
     <div class="coord-sub">${lat.toFixed(4)}°, ${lon.toFixed(4)}° · ${esc(d.timezone)}</div>
-    <div class="big-temp">${convertTemp(c.temperature_2m)}<sup>${tempUnit()}</sup></div>
-    <div class="feels-like">Feels like ${convertTemp(c.apparent_temperature)}${tempUnit()}</div>
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px">
+      <div>
+        <div class="big-temp">${Math.round(tempVal)}<sup>${tempUnit}</sup></div>
+        <div class="feels-like">Feels like ${Math.round(feelsVal)}°</div>
+      </div>
+    </div>
     <div class="condition-pill"><span class="cond-icon">${condIcon}</span>${esc(condLabel)}</div>
     <div class="stats-grid">
-      <div class="stat-chip"><div class="sc-label">Humidity</div><div class="sc-val">${c.relative_humidity_2m}<span class="sc-unit"> %</span></div></div>
-      <div class="stat-chip"><div class="sc-label">Wind</div><div class="sc-val">${convertWind(c.wind_speed_10m)}<span class="sc-unit"> ${windUnit()} ${windDir}</span></div></div>
-      <div class="stat-chip"><div class="sc-label">Pressure</div><div class="sc-val">${Math.round(c.surface_pressure)}<span class="sc-unit"> hPa</span></div></div>
-      <div class="stat-chip"><div class="sc-label">Visibility</div><div class="sc-val">${convertDist(c.visibility/1000)}<span class="sc-unit"> ${distUnit()}</span></div></div>
-    </div>`;
+      <div class="stat-chip"><div class="sc-label">Humidity</div><div class="sc-val">${c.relative_humidity_2m}<span class="sc-unit">%</span></div></div>
+      <div class="stat-chip"><div class="sc-label">Wind</div><div class="sc-val">${windVal}<span class="sc-unit"> ${windUnit} ${windDir}</span></div></div>
+      <div class="stat-chip"><div class="sc-label">Pressure</div><div class="sc-val">${c.surface_pressure}<span class="sc-unit"> hPa</span></div></div>
+      <div class="stat-chip"><div class="sc-label">Visibility</div><div class="sc-val">${visVal}<span class="sc-unit"> ${STATE.distUnit === 'mi' ? 'mi' : 'km'}</span></div></div>
+    </div>
+  `;
 
-  // Hourly
-  const now = new Date(), hourly = d.hourly;
-  const hRows = []; let hCount = 0;
-  for (let i = 0; i < hourly.time.length && hCount < 24; i++) {
+  const now = new Date();
+  const hourly = d.hourly;
+  const hourlyRows = [];
+  let count = 0;
+  for (let i = 0; i < hourly.time.length && count < 24; i++) {
     const t = new Date(hourly.time[i]);
     if (t < now) continue;
-    const [,hIcon] = wmo(hourly.weather_code[i], new Date(hourly.time[i]), lat, lon);
-    hRows.push(`<div class="hour-card${hCount===0?' now':''}">
-      <div class="h-time">${hCount===0?'Now':formatHour(t)}</div>
-      <span class="h-icon">${hIcon}</span>
-      <div class="h-temp">${convertTemp(hourly.temperature_2m[i])}°</div>
-      <div class="h-rain">💧 ${hourly.precipitation_probability[i]}%</div>
-    </div>`);
-    hCount++;
+    const isNow = count === 0;
+    const [, hIcon] = wmo(hourly.weather_code[i]);
+    const hTemp = convertTemp(hourly.temperature_2m[i]);
+    hourlyRows.push(`<div class="hour-card${isNow ? ' now' : ''}"><div class="h-time">${isNow ? 'Now' : formatHour(t)}</div><div class="h-icon">${hIcon}</div><div class="h-temp">${Math.round(hTemp)}°</div><div class="h-rain">💧 ${hourly.precipitation_probability[i]}%</div></div>`);
+    count++;
   }
-  document.getElementById('hourlyRow').innerHTML = hRows.join('');
+  document.getElementById('hourlyRow').innerHTML = hourlyRows.join('');
 
-  // Daily
   const daily = d.daily;
-  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  document.getElementById('dayList').innerHTML = daily.time.map((t,i) => {
-    const dt = dt2;
-    const dt2 = new Date(t+'T12:00:00'); const [dLabel,dIcon] = wmo(daily.weather_code[i], dt2, lat, lon);
-    return `<div class="day-row${i===0?' today':''}">
-      <div class="day-name">${i===0?'Today':dayNames[dt.getDay()]}</div>
-      <div class="day-icon">${dIcon}</div>
-      <div class="day-desc">${esc(dLabel)}</div>
-      <div class="day-rain">💧 ${daily.precipitation_probability_max[i]}%</div>
-      <div class="day-range">
-        <span class="day-hi">${convertTemp(daily.temperature_2m_max[i])}°</span>
-        <span class="day-lo">${convertTemp(daily.temperature_2m_min[i])}°</span>
-      </div>
-    </div>`;
-  }).join('');
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayItems = daily.time.map((t, i) => {
+    const dt = new Date(t + 'T12:00:00');
+    const isToday = i === 0;
+    const [dLabel, dIcon] = wmo(daily.weather_code[i]);
+    const dHi = convertTemp(daily.temperature_2m_max[i]);
+    const dLo = convertTemp(daily.temperature_2m_min[i]);
+    return `<div class="day-row${isToday ? ' today' : ''}"><div class="day-name">${isToday ? 'Today' : dayNames[dt.getDay()]}</div><div class="day-icon">${dIcon}</div><div class="day-desc">${esc(dLabel)}</div><div class="day-rain">💧 ${daily.precipitation_probability_max[i]}%</div><div class="day-range"><span class="day-hi">${Math.round(dHi)}°</span><span class="day-lo">${Math.round(dLo)}°</span></div></div>`;
+  });
+  document.getElementById('dayList').innerHTML = dayItems.join('');
 
-  // Detail
   const uv = daily.uv_index_max[0];
-  const uvColor = uv<=2?'#34C785':uv<=5?'#F4C430':uv<=7?'#FF8C00':'#D62828';
-  const ws = daily.wind_speed_10m_max[0];
-  const wsV = parseFloat(convertWind(ws));
-  const wsMax = prefs.wind==='kn'?43:prefs.wind==='ms'?22:prefs.wind==='mph'?50:80;
+  const uvColor = uv <= 2 ? '#5aff8a' : uv <= 5 ? '#ffe05a' : uv <= 7 ? '#ffaa5a' : '#ff6060';
+  const uvW = Math.min((uv / 11) * 100, 100);
+  const ws = convertWind(daily.wind_speed_10m_max[0]);
+  const wsW = Math.min((ws / 80) * 100, 100);
+
   document.getElementById('detailGrid').innerHTML = `
-    <div class="detail-card">
-      <div class="dc-label">UV Index — Today</div>
-      <div class="dc-val">${uv}</div>
-      <div class="dc-unit">${uvCategory(uv)}</div>
-      <div class="m3-linear-bar"><div class="m3-linear-fill" style="width:${Math.min(uv/11*100,100)}%;background:${uvColor}"></div></div>
-    </div>
-    <div class="detail-card">
-      <div class="dc-label">Max Wind — Today</div>
-      <div class="dc-val">${wsV}</div>
-      <div class="dc-unit">${windUnit()} · ${degToCompass(daily.wind_direction_10m_dominant[0])}</div>
-      <div class="m3-linear-bar"><div class="m3-linear-fill" style="width:${Math.min(wsV/wsMax*100,100)}%;background:var(--md-primary)"></div></div>
-    </div>`;
+    <div class="detail-card"><div class="dc-label">UV Index — Today</div><div class="dc-val">${uv}</div><div class="dc-unit">${uvCategory(uv)}</div><div class="m3-linear-bar"><div class="m3-linear-fill" style="width:${uvW}%;background:${uvColor}"></div></div></div>
+    <div class="detail-card"><div class="dc-label">Max Wind — Today</div><div class="dc-val">${Math.round(ws)}</div><div class="dc-unit">${windUnit}</div><div class="m3-linear-bar"><div class="m3-linear-fill" style="width:${wsW}%;background:#A8C7FA"></div></div></div>
+  `;
 
-  document.getElementById('message').style.display = 'none';
-  document.getElementById('weather').classList.add('visible');
-  syncMapMarker(lat, lon, cityName);
-  showSatToggle();
+  const msg = document.getElementById('message');
+  const weather = document.getElementById('weather');
+  msg.style.display = 'none';
+  weather.classList.add('visible');
 }
 
-// ════════════════════════════════════════════
-// MAP
-// ════════════════════════════════════════════
-// ════════════════════════════════════════════
-// MAPBOX GL JS
-// ════════════════════════════════════════════
-const MAPBOX_TOKEN = 'pk.eyJ1IjoibWV0ZW9yb24iLCJhIjoiY21venBya2R0MTBkYjR3cHdzOW44ZXd5aiJ9.EJB5mzhRqqd_G8RWz3T1rA';
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeIcon = document.getElementById('themeIcon');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsScrim = document.getElementById('settingsScrim');
+const settingsDrawer = document.getElementById('settingsDrawer');
+const settingsCloseBtn = document.getElementById('settingsCloseBtn');
 
-// Fixed professional style — decoupled from UI light/dark theme
-// Mapbox Outdoors: terrain-aware, clear labels, works beautifully for both sailors and climbers
-const MB_STYLE = 'mapbox://styles/mapbox/outdoors-v12';
+themeToggleBtn.addEventListener('click', () => {
+  STATE.theme = STATE.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', STATE.theme);
+  themeIcon.textContent = STATE.theme === 'dark' ? 'dark_mode' : 'light_mode';
+  localStorage.setItem('theme', STATE.theme);
+});
 
-let map = null;
-let mbMarker = null;
-let mbPopup = null;
-let activeOWMLayerId = null;
-let mapInitialised = false;
+settingsBtn.addEventListener('click', () => { settingsScrim.classList.add('open'); settingsDrawer.classList.add('open'); });
+[settingsCloseBtn, settingsScrim].forEach(el => { el.addEventListener('click', () => { settingsScrim.classList.remove('open'); settingsDrawer.classList.remove('open'); }); });
 
-const mapToggleBtn   = document.getElementById('mapToggleBtn');
-const mapToggleLabel = document.getElementById('mapToggleLabel');
-const mapPanel       = document.getElementById('mapPanel');
+['tempUnitGroup', 'windUnitGroup', 'distUnitGroup', 'themeGroup'].forEach(groupId => {
+  document.getElementById(groupId).querySelectorAll('.m3-seg-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      document.getElementById(groupId).querySelectorAll('.m3-seg-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      if (groupId === 'tempUnitGroup') STATE.tempUnit = e.target.dataset.val;
+      if (groupId === 'windUnitGroup') STATE.windUnit = e.target.dataset.val;
+      if (groupId === 'distUnitGroup') STATE.distUnit = e.target.dataset.val;
+      if (groupId === 'themeGroup') {
+        STATE.theme = e.target.dataset.val;
+        document.documentElement.setAttribute('data-theme', STATE.theme);
+        themeIcon.textContent = STATE.theme === 'dark' ? 'dark_mode' : 'light_mode';
+      }
+      if (STATE.currentData) renderWeather(STATE.currentData, STATE.currentCity, STATE.currentLat, STATE.currentLon);
+    });
+  });
+});
 
+const savedTheme = localStorage.getItem('theme') || 'dark';
+STATE.theme = savedTheme;
+document.documentElement.setAttribute('data-theme', savedTheme);
+themeIcon.textContent = savedTheme === 'dark' ? 'dark_mode' : 'light_mode';
+
+const mapToggleBtn = document.getElementById('mapToggleBtn');
+const mapPanel = document.getElementById('mapPanel');
 mapToggleBtn.addEventListener('click', () => {
-  const open = mapPanel.classList.toggle('open');
-  mapToggleBtn.classList.toggle('open', open);
-  mapToggleLabel.textContent = open ? 'Hide Map' : 'Show Map';
-  if (open && !mapInitialised) initMap();
-  else if (open && map) map.resize(); // fix rendering after display:none
+  mapPanel.classList.toggle('open');
+  mapToggleBtn.classList.toggle('open');
 });
 
-function initMap() {
-  mapInitialised = true;
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-
-  map = new mapboxgl.Map({
-    container: 'map',
-    style: MB_STYLE,
-    center: [0, 20],
-    zoom: 1.8,
-    attributionControl: true,
-  });
-
-  // Add navigation controls (zoom + compass)
-  map.addControl(new mapboxgl.NavigationControl({ showCompass: true }), 'top-right');
-
-  // Click to query weather
-  map.on('click', async e => {
-    const { lng: lon, lat } = e.lngLat;
-    placeMapMarker(lat, lon);
-    updateCoordBar(lat, lon);
-    let name = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
-    try {
-      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-      const d = await r.json();
-      const p = d.address?.city||d.address?.town||d.address?.village||d.address?.county||d.address?.state;
-      if (p) name = p + (d.address?.country ? ', ' + d.address.country : '');
-    } catch {}
-    fetchWeather(lat, lon, name);
-  });
-
-  // Change cursor to crosshair over the map
-  map.getCanvas().style.cursor = 'crosshair';
-
-  // OWM weather layer source — added once the style loads
-  map.on('load', () => {
-    map.addSource('owm-weather', {
-      type: 'raster',
-      tiles: [`${OWM_PROXY}/map/none/{z}/{x}/{y}.png`], // placeholder, updated by setOWMLayer
-      tileSize: 256,
-      attribution: '© OpenWeatherMap',
-    });
-    map.addLayer({
-      id: 'owm-weather-layer',
-      type: 'raster',
-      source: 'owm-weather',
-      paint: { 'raster-opacity': 0 }, // invisible until a layer is chosen
-    });
-  });
-
-  // Chip layer switcher
-  document.querySelectorAll('.m3-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.m3-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      setOWMLayer(chip.dataset.layer);
-    });
-  });
-}
-
-function placeMapMarker(lat, lon) {
-  if (!map) return;
-
-  // Create custom marker element
-  if (!mbMarker) {
-    const el = document.createElement('div');
-    el.className = 'mb-marker';
-    mbPopup = new mapboxgl.Popup({ offset: 16, closeButton: true, maxWidth: '220px' });
-    mbMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
-      .setLngLat([lon, lat])
-      .setPopup(mbPopup)
-      .addTo(map);
-  } else {
-    mbMarker.setLngLat([lon, lat]);
-  }
-
-  mbPopup.setHTML(`<b>📍 Selected location</b><br>Lat: <b>${lat.toFixed(5)}</b><br>Lon: <b>${lon.toFixed(5)}</b>`);
-  mbMarker.togglePopup(); // open popup
-
-  map.flyTo({ center: [lon, lat], zoom: Math.max(map.getZoom(), 6), duration: 800, essential: true });
-}
-
-function syncMapMarker(lat, lon, cityName) {
-  if (!map || !mapInitialised) return;
-  placeMapMarker(lat, lon);
-  updateCoordBar(lat, lon);
-  if (mbPopup) mbPopup.setHTML(`<b>📍 ${esc(cityName)}</b><br>Lat: <b>${lat.toFixed(5)}</b><br>Lon: <b>${lon.toFixed(5)}</b>`);
-}
-
-function updateCoordBar(lat, lon) {
-  document.getElementById('mapCoordDisplay').innerHTML =
-    `Lat: <strong>${lat.toFixed(5)}</strong> &nbsp; Lon: <strong>${lon.toFixed(5)}</strong>`;
-}
-
-// swapBaseLayer is now a no-op — Mapbox style is fixed, independent of UI theme
-function swapBaseLayer(theme) { /* map style is theme-independent */ }
-
-// ── Weather tile layers via OWM proxy ──────────────────────────────────────
-const LEGENDS = {
-  none: null,
-  precipitation_new: {
-    title: '🌧 Precipitation intensity',
-    gradient: 'linear-gradient(to right,#a8f0ff,#4dc4ff,#0078c8,#0000c8,#8000c8,#ff00c8)',
-    min: '0 mm/h', mid: 'Moderate', max: '200+ mm/h',
-  },
-  wind_new: {
-    title: '💨 Wind speed',
-    gradient: 'linear-gradient(to right,#d4f5d4,#a8e6a8,#ffff64,#ffc800,#ff6400,#c80000)',
-    min: 'Calm 0', mid: '~50 km/h', max: '200+ km/h',
-  },
-  temp_new: {
-    title: '🌡 Temperature',
-    gradient: 'linear-gradient(to right,#8000ff,#0000ff,#0080ff,#00c8ff,#00ff80,#ffff00,#ff8000,#ff0000)',
-    min: '−40°', mid: '0°', max: '+40°',
-  },
-  clouds_new: {
-    title: '☁️ Cloud cover',
-    gradient: 'linear-gradient(to right,#1a3a5c,#3a6a9c,#7aaad0,#b0cce8,#ddeeff,#ffffff)',
-    min: 'Clear 0%', mid: '50%', max: 'Overcast 100%',
-  },
-};
-
-function setOWMLayer(layerName) {
-  if (!map) return;
-  const legend = document.getElementById('mapLegend');
-
-  // Wait for style to be loaded before touching sources/layers
-  const apply = () => {
-    const source = map.getSource('owm-weather');
-    if (!source) return;
-
-    if (layerName === 'none') {
-      map.setPaintProperty('owm-weather-layer', 'raster-opacity', 0);
-      legend.classList.remove('show');
-      return;
-    }
-
-    // Swap tile URL by removing and re-adding the source
-    map.removeLayer('owm-weather-layer');
-    map.removeSource('owm-weather');
-    map.addSource('owm-weather', {
-      type: 'raster',
-      tiles: [`${OWM_PROXY}/map/${layerName}/{z}/{x}/{y}.png`],
-      tileSize: 256,
-      attribution: '© OpenWeatherMap',
-    });
-    map.addLayer({
-      id: 'owm-weather-layer',
-      type: 'raster',
-      source: 'owm-weather',
-      paint: { 'raster-opacity': 0.7 },
-    });
-
-    // Update legend
-    const data = LEGENDS[layerName];
-    document.getElementById('legendTitle').textContent = data.title;
-    document.getElementById('legendBar').style.background = data.gradient;
-    document.getElementById('legendMin').textContent = data.min;
-    document.getElementById('legendMid').textContent = data.mid;
-    document.getElementById('legendMax').textContent = data.max;
-    legend.classList.add('show');
-  };
-
-  if (map.isStyleLoaded()) apply();
-  else map.once('load', apply);
-}
-
-
-// ════════════════════════════════════════════
-// SATELLITE MESSAGE FEATURE
-// ════════════════════════════════════════════
-
-const satToggleRow = document.getElementById('satToggleRow');
 const satToggleBtn = document.getElementById('satToggleBtn');
-const satToggleLabel = document.getElementById('satToggleLabel');
-const satCard      = document.getElementById('satCard');
-const satOutput    = document.getElementById('satOutput');
-
-// Show toggle button only when forecast is loaded
-function showSatToggle() { satToggleRow.classList.add('visible'); }
-
-satToggleBtn.addEventListener('click', () => {
-  const open = satCard.classList.toggle('open');
-  satToggleBtn.classList.toggle('open', open);
-  satToggleLabel.textContent = open ? 'Hide Satellite Message' : 'Satellite Message';
-});
+const satCard = document.getElementById('satCard');
+satToggleBtn.addEventListener('click', () => { satCard.classList.toggle('open'); satToggleBtn.classList.toggle('open'); });
 
 document.getElementById('satGenerateBtn').addEventListener('click', generateSatMessage);
+document.getElementById('satCopyBtn').addEventListener('click', copySatMessage);
 
-// Copy button
-document.getElementById('satCopyBtn').addEventListener('click', () => {
-  const text = document.getElementById('satMsgText').value;
-  navigator.clipboard.writeText(text).then(() => {
-    const fb = document.getElementById('satCopyFeedback');
-    fb.classList.add('show');
-    setTimeout(() => fb.classList.remove('show'), 2500);
-  });
-});
-
-// Segmented groups for profile & device
-function bindSatSeg(groupId) {
-  document.querySelectorAll(`#${groupId} .m3-seg-btn`).forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll(`#${groupId} .m3-seg-btn`).forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-}
-bindSatSeg('satProfileGroup');
-bindSatSeg('satDeviceGroup');
-
-function getSatProfile() {
-  return document.querySelector('#satProfileGroup .m3-seg-btn.active')?.dataset.val || 'general';
-}
-function getSatDevice() {
-  return parseInt(document.querySelector('#satDeviceGroup .m3-seg-btn.active')?.dataset.val || '160');
-}
-
-// ── Abbreviation helpers ───────────────────────────────────────────────────
-function abbrLocation(name) {
-  // Take first word up to 6 chars, uppercase
-  const first = name.split(',')[0].trim().split(' ')[0].substring(0, 6).toUpperCase();
-  return first;
-}
-
-function abbrWMO(code) {
-  if ([95,96,99].includes(code)) return 'TSTM';
-  if ([65,82].includes(code))    return 'HVYRN';
-  if ([75,86].includes(code))    return 'HVYSN';
-  if ([61,63,80,81].includes(code)) return 'RN';
-  if ([71,73,77,85].includes(code)) return 'SN';
-  if ([51,53,55].includes(code)) return 'DRZL';
-  if ([45,48].includes(code))    return 'FOG';
-  if (code === 3)                return 'OCST';
-  if (code === 2)                return 'PTCLD';
-  if ([0,1].includes(code))      return 'CLR';
-  return '';
-}
-
-function isThunderstorm(code) { return [95,96,99].includes(code); }
-function isHeavyWx(code)      { return [65,75,82,86,95,96,99].includes(code); }
-
-// ── Beaufort scale boundary crossing ──────────────────────────────────────
-function beaufortLevel(kmh) {
-  if (kmh < 1)   return 0;
-  if (kmh < 6)   return 1;
-  if (kmh < 12)  return 2;
-  if (kmh < 20)  return 3;
-  if (kmh < 29)  return 4;
-  if (kmh < 39)  return 5;
-  if (kmh < 50)  return 6;
-  if (kmh < 62)  return 7;
-  if (kmh < 75)  return 8;
-  if (kmh < 89)  return 9;
-  if (kmh < 103) return 10;
-  if (kmh < 117) return 11;
-  return 12;
-}
-
-// ── Convert wind to km/h for internal trigger calculations ────────────────
-function toKmh(val) {
-  // lastWeatherData fetched with owmWindParam() which may be knots/ms/mph
-  switch (prefs.wind) {
-    case 'kn':  return val / 0.539957;
-    case 'ms':  return val * 3.6;
-    case 'mph': return val / 0.621371;
-    default:    return val; // already km/h
-  }
-}
-
-// ── Determine forecast window (24 or 72 hours) ────────────────────────────
-function determineForecastWindow(hourly, profile, startIdx) {
-  const hours = hourly.time.length;
-  let triggers = [];
-
-  for (let i = startIdx; i < Math.min(startIdx + 72, hours - 1); i++) {
-    const h = i - startIdx; // hours from now
-    const wsKmh    = toKmh(hourly.wind_speed_10m[i]);
-    const wsKmhNxt = toKmh(hourly.wind_speed_10m[i+1] || hourly.wind_speed_10m[i]);
-    const wdDiff   = Math.abs((hourly.wind_direction_10m[i+1] || 0) - hourly.wind_direction_10m[i]);
-    const code     = hourly.weather_code[i];
-    const tempDiff = (hourly.temperature_2m[i] || 0) - (hourly.temperature_2m[startIdx] || 0);
-
-    if (profile === 'sailing') {
-      if (beaufortLevel(wsKmh) !== beaufortLevel(wsKmhNxt)) triggers.push({ h, reason: 'wind_change' });
-      if (wdDiff > 45 && wdDiff < 315)                      triggers.push({ h, reason: 'wind_shift' });
-      if (isThunderstorm(code))                             triggers.push({ h, reason: 'tstm' });
-      if (beaufortLevel(wsKmh) >= 7 && h > 0)              triggers.push({ h, reason: 'gale' });
-    } else if (profile === 'alpine') {
-      if (tempDiff < -8)               triggers.push({ h, reason: 'temp_drop' });
-      if (isThunderstorm(code))        triggers.push({ h, reason: 'tstm' });
-      if (wsKmh > 50)                  triggers.push({ h, reason: 'high_wind' });
-      if ([71,73,75,77,85,86].includes(code)) triggers.push({ h, reason: 'snow' });
-    } else {
-      if (isThunderstorm(code))        triggers.push({ h, reason: 'tstm' });
-      if (wsKmh > 60)                  triggers.push({ h, reason: 'high_wind' });
-      if (isHeavyWx(code))             triggers.push({ h, reason: 'heavy_wx' });
-    }
-  }
-
-  // If any trigger fires beyond 24h, extend to 72h
-  const beyond24 = triggers.filter(t => t.h > 24);
-  const window   = beyond24.length > 0 ? 72 : 24;
-  return { window, triggers };
-}
-
-// ── Generate warning string ────────────────────────────────────────────────
-function buildWarnings(triggers, profile) {
-  const unique = [...new Set(triggers.map(t => t.reason))];
-  const parts  = [];
-  const earliest = r => Math.min(...triggers.filter(t => t.reason === r).map(t => t.h));
-
-  if (unique.includes('tstm'))       parts.push(`TSTM +${earliest('tstm')}H`);
-  if (unique.includes('gale'))       parts.push(`GALE WARN +${earliest('gale')}H`);
-  if (unique.includes('high_wind'))  parts.push(`HIGH WIND +${earliest('high_wind')}H`);
-  if (unique.includes('temp_drop'))  parts.push(`TEMP DROP +${earliest('temp_drop')}H`);
-  if (unique.includes('snow'))       parts.push(`SNOW +${earliest('snow')}H`);
-  if (unique.includes('wind_shift')) parts.push(`WD SHIFT +${earliest('wind_shift')}H`);
-  if (unique.includes('wind_change'))parts.push(`BFT CHG +${earliest('wind_change')}H`);
-  if (unique.includes('heavy_wx'))   parts.push(`HEAVY WX +${earliest('heavy_wx')}H`);
-
-  return parts.join(' | ');
-}
-
-// ── Build a single hourly slot summary ────────────────────────────────────
-function buildSlot(hourly, idx, profile, showLabel) {
-  const t    = showLabel;
-  const temp = convertTemp(hourly.temperature_2m[idx]);
-  const tu   = tempUnit();
-  const ws   = convertWind(toKmh(hourly.wind_speed_10m[idx]));
-  const wd   = degToCompass(hourly.wind_direction_10m[idx]);
-  const code = hourly.weather_code[idx];
-  const wx   = abbrWMO(code);
-
-  if (profile === 'sailing') {
-    // Sailing: wind-first
-    let s = `${t}:WS${ws}${windUnit()} WD${wd}`;
-    if (wx && wx !== 'CLR') s += ` ${wx}`;
-    return s;
-  } else if (profile === 'alpine') {
-    // Alpine: temp-first
-    let s = `${t}:${temp}${tu}`;
-    if (wx && wx !== 'CLR') s += ` ${wx}`;
-    s += ` WS${ws}${windUnit()}`;
-    return s;
-  } else {
-    // General: balanced
-    let s = `${t}:${temp}${tu}`;
-    if (wx && wx !== 'CLR') s += ` ${wx}`;
-    s += ` WS${ws}`;
-    return s;
-  }
-}
-
-// ── Main generator ─────────────────────────────────────────────────────────
 function generateSatMessage() {
-  if (!lastWeatherData) return;
-
-  const profile  = getSatProfile();
-  const maxChars = getSatDevice();
-  const hourly   = lastWeatherData.hourly;
-  const now      = new Date();
-
-  // Find the current hour index in the hourly array
-  let startIdx = 0;
-  for (let i = 0; i < hourly.time.length; i++) {
-    if (new Date(hourly.time[i]) >= now) { startIdx = i; break; }
-  }
-
-  const loc = abbrLocation(lastCityName);
-  const { window: fwHours, triggers } = determineForecastWindow(hourly, profile, startIdx);
-
-  // Build slots — pick representative hours
-  const slotOffsets = fwHours === 24 ? [0, 6, 12, 18] : [0, 6, 12, 18, 24, 36, 48, 60, 72];
-  const slotLabels  = slotOffsets.map(h => h === 0 ? 'Now' : `+${h}H`);
-
-  let slotParts = [];
-  for (let s = 0; s < slotOffsets.length; s++) {
-    const idx = startIdx + slotOffsets[s];
-    if (idx >= hourly.time.length) break;
-    slotParts.push(buildSlot(hourly, idx, profile, slotLabels[s]));
-  }
-
-  // Warnings
-  const warnStr = buildWarnings(triggers, profile);
-
-  // Assemble — trim to fit char limit
-  let msg = `${loc} ${fwHours}H | ${slotParts.join(' | ')}`;
-  if (warnStr) msg += ` | ⚠ ${warnStr}`;
-
-  // If over limit, drop later slots one by one
-  if (msg.length > maxChars) {
-    while (slotParts.length > 2 && msg.length > maxChars) {
-      slotParts.splice(slotParts.length - (warnStr ? 2 : 1), 1);
-      msg = `${loc} ${fwHours}H | ${slotParts.join(' | ')}`;
-      if (warnStr) msg += ` | ⚠ ${warnStr}`;
-    }
-  }
-
-  // Render output
-  const textarea = document.getElementById('satMsgText');
-  textarea.value = msg;
-
+  const profile = document.querySelector('#satProfileGroup .m3-seg-btn.active').dataset.val;
+  const charLimit = parseInt(document.querySelector('#satDeviceGroup .m3-seg-btn.active').dataset.val);
+  const weather = STATE.currentData;
+  const c = weather.current;
+  const tempVal = convertTemp(c.temperature_2m);
+  const tempUnit = STATE.tempUnit === 'fahrenheit' ? 'F' : 'C';
+  const windVal = convertWind(c.wind_speed_10m);
+  const windUnit = STATE.windUnit === 'mph' ? 'mph' : STATE.windUnit === 'kn' ? 'kn' : STATE.windUnit === 'ms' ? 'm/s' : 'kmh';
+  const [condLabel] = wmo(c.weather_code);
+  let message = `WX: ${Math.round(tempVal)}${tempUnit} ${windVal}${windUnit} ${condLabel} Vis:${convertDist(c.visibility/1000)}${STATE.distUnit==='mi'?'mi':'km'} `;
+  if (profile === 'sailing') { message += `Humidity:${c.relative_humidity_2m}% Press:${c.surface_pressure}hPa`; }
+  else if (profile === 'alpine') { message += `UV:${weather.daily.uv_index_max[0]} Humidity:${c.relative_humidity_2m}%`; }
+  const truncated = message.substring(0, charLimit);
+  document.getElementById('satMsgText').value = truncated;
+  document.getElementById('satCharCount').textContent = `${truncated.length} / ${charLimit}`;
+  document.getElementById('satTranslation').textContent = `Weather update: ${Math.round(tempVal)}° with ${condLabel.toLowerCase()}, wind at ${windVal} ${windUnit}.`;
+  document.getElementById('satOutput').classList.add('show');
   const charCount = document.getElementById('satCharCount');
-  charCount.textContent = `${msg.length} / ${maxChars}`;
-  charCount.className = 'sat-char-count' +
-    (msg.length > maxChars ? ' over' : msg.length > maxChars * 0.85 ? ' warn' : '');
-
-  document.getElementById('satWindowBadge').textContent = `${fwHours}H`;
-
-  // Plain language translation
-  const translation = buildTranslation(hourly, startIdx, profile, fwHours, triggers);
-  document.getElementById('satTranslation').textContent = translation;
-
-  satOutput.classList.add('show');
+  charCount.classList.remove('warn', 'over');
+  if (truncated.length > charLimit * 0.9) charCount.classList.add('warn');
+  if (truncated.length >= charLimit) charCount.classList.add('over');
 }
 
-// ── Plain language translation ─────────────────────────────────────────────
-function buildTranslation(hourly, startIdx, profile, fwHours, triggers) {
-  const nowCode  = hourly.weather_code[startIdx];
-  const nowTemp  = convertTemp(hourly.temperature_2m[startIdx]);
-  const nowWs    = convertWind(toKmh(hourly.wind_speed_10m[startIdx]));
-  const nowWd    = degToCompass(hourly.wind_direction_10m[startIdx]);
-  const [nowLabel] = abbrWMO(nowCode) === 'CLR' ? ['clear skies'] : [WMO[nowCode]?.[0]?.toLowerCase() || 'mixed conditions'];
-  const city     = lastCityName.split(',')[0];
-
-  let intro = `Current conditions near ${city}: ${nowTemp}${tempUnit()}, ${nowLabel}, wind ${nowWs} ${windUnit()} from the ${nowWd}.`;
-
-  // Significant changes
-  const changes = [];
-  const uniqueReasons = [...new Set(triggers.map(t => t.reason))];
-  const earliest = r => Math.min(...triggers.filter(t => t.reason === r).map(t => t.h));
-
-  if (uniqueReasons.includes('tstm'))
-    changes.push(`Thunderstorms are expected around hour ${earliest('tstm')} — conditions could be dangerous.`);
-  if (uniqueReasons.includes('gale'))
-    changes.push(`Gale-force winds are forecast from hour ${earliest('gale')} onward.`);
-  if (uniqueReasons.includes('wind_change'))
-    changes.push(`Wind strength is expected to change significantly around hour ${earliest('wind_change')}.`);
-  if (uniqueReasons.includes('wind_shift'))
-    changes.push(`A significant wind direction shift is forecast around hour ${earliest('wind_shift')}.`);
-  if (uniqueReasons.includes('temp_drop'))
-    changes.push(`Temperature is expected to drop sharply from hour ${earliest('temp_drop')} — cold weather risk.`);
-  if (uniqueReasons.includes('snow'))
-    changes.push(`Snow is expected from hour ${earliest('snow')}.`);
-  if (uniqueReasons.includes('high_wind'))
-    changes.push(`High winds are forecast from hour ${earliest('high_wind')}.`);
-  if (uniqueReasons.includes('heavy_wx'))
-    changes.push(`Heavy weather is forecast from hour ${earliest('heavy_wx')}.`);
-
-  const window = fwHours === 72
-    ? `The forecast covers the next 72 hours due to significant changes ahead.`
-    : `Conditions are broadly stable for the next 24 hours.`;
-
-  const parts = [intro];
-  if (changes.length > 0) parts.push(...changes);
-  parts.push(window);
-
-  return parts.join(' ');
+function copySatMessage() {
+  const msg = document.getElementById('satMsgText').value;
+  navigator.clipboard.writeText(msg).then(() => {
+    const feedback = document.getElementById('satCopyFeedback');
+    feedback.classList.add('show');
+    setTimeout(() => feedback.classList.remove('show'), 2000);
+  });
 }
 
-// ════════════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════════════
-function showMsg(iconOrHtml, title, sub) {
-  document.getElementById('weather').classList.remove('visible');
-  const msg = document.getElementById('message');
-  msg.style.display = 'block';
-  if (title) {
-    msg.innerHTML = `<span class="msg-icon">${iconOrHtml}</span><div class="msg-title">${title}</div><div class="msg-sub">${sub}</div>`;
-  } else {
-    msg.innerHTML = `<div style="padding:40px 0;color:var(--md-on-surface-variant)">${iconOrHtml}</div>`;
-  }
-}
-function formatHour(d) { return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false}); }
-function degToCompass(deg) { return ['N','NE','E','SE','S','SW','W','NW'][Math.round((deg%360)/45)%8]; }
-function uvCategory(uv) { return uv<=2?'Low':uv<=5?'Moderate':uv<=7?'High':uv<=10?'Very High':'Extreme'; }
-
-// ════════════════════════════════════════════
-// BOOT
-// ════════════════════════════════════════════
-loadPrefs();
-applyPrefsToUI();
-updateThemeIcon(prefs.theme);
+showMsg('<span class="msg-icon">🌤</span><div class="msg-title">Welcome to Meteoron</div><div class="msg-sub">Search for a city, enter coordinates, or click the map to get started.</div>');
 </script>
 </body>
 </html>
