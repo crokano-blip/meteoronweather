@@ -1375,10 +1375,27 @@ mapToggleBtn.addEventListener('click', ()=>{
 function initMap() {
   STATE.mapInitialised = true;
   mapboxgl.accessToken = MAPBOX_TOKEN;
+
+  // Check WebGL support before attempting to render
+  if (!mapboxgl.supported()) {
+    document.getElementById('map').innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--md-on-surface-variant);font-size:.875rem;padding:24px;text-align:center">' +
+      'Your browser does not support WebGL, which is required for the map. Try enabling hardware acceleration in your browser settings.</div>';
+    return;
+  }
+
   STATE.map = new mapboxgl.Map({
-    container:'map', style:MB_STYLE,
-    center:[0,20], zoom:1.8, attributionControl:true,
+    container: 'map',
+    style: MB_STYLE,
+    center: [0, 20],
+    zoom: 1.8,
+    attributionControl: true,
+    projection: 'mercator',
+    failIfMajorPerformanceCaveat: false,
   });
+
+  STATE.map.on('error', e => { console.error('Mapbox error:', e.error); });
+
   STATE.map.addControl(new mapboxgl.NavigationControl({showCompass:true}), 'top-right');
   STATE.map.getCanvas().style.cursor = 'crosshair';
 
