@@ -926,7 +926,12 @@ body{
 // CONFIGURATION
 // ════════════════════════════════════════════════════════
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWV0ZW9yb24iLCJhIjoiY21venBya2R0MTBkYjR3cHdzOW44ZXd5aiJ9.EJB5mzhRqqd_G8RWz3T1rA';
-const MB_STYLE     = 'mapbox://styles/mapbox/outdoors-v12';
+// Map style switches with UI theme — light loads first by default
+function getMapStyle(theme) {
+  return theme === 'dark'
+    ? 'mapbox://styles/mapbox/dark-v11'
+    : 'mapbox://styles/mapbox/light-v11';
+}
 const OWM_PROXY    = 'https://rapid-paper-a152meteoron-owm-proxy.crokano.workers.dev';
 
 const WMO_CODES = {
@@ -947,6 +952,7 @@ const STATE = {
   lat:null, lon:null, city:null, data:null,
   map:null, mbMarker:null, mbPopup:null,
   activeOWMLayer:null, mapInitialised:false,
+  mapStyleLoaded:false, activeLayerName:'none',
 };
 
 // ════════════════════════════════════════════════════════
@@ -1108,6 +1114,7 @@ function applyPrefsToUI() {
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   document.getElementById('themeIcon').textContent = t==='dark'?'light_mode':'dark_mode';
+  if (STATE.mapInitialised) swapBaseLayer(t);
 }
 
 // ════════════════════════════════════════════════════════
@@ -1394,7 +1401,7 @@ function initMap() {
 
   STATE.map = new mapboxgl.Map({
     container: 'map',
-    style: MB_STYLE,
+    style: getMapStyle('light'), // always start with light
     center: [0, 20],
     zoom: 1.8,
     attributionControl: true,
@@ -1460,9 +1467,26 @@ function updateCoordBar(lat, lon) {
     `Lat: <strong>${lat.toFixed(5)}</strong> &nbsp; Lon: <strong>${lon.toFixed(5)}</strong>`;
 }
 
-function swapBaseLayer() { /* Mapbox style is fixed and theme-independent */ }
+function swapBaseLayer(theme) {
+  const map = STATE.map;
+  if (!map) return;
+  const newStyle = getMapStyle(theme);
+  // setStyle wipes all custom layers — re-add OWM overlay after style loads
+  map.setStyle(newStyle);
+  map.once('style.load', () => {
+    // Re-add marker if present
+    if (STATE.mbMarker && STATE.lat) {
+      // Marker persists across style changes automatically in Mapbox GL JS
+    }
+    // Restore active weather layer if one was selected
+    if (STATE.activeLayerName && STATE.activeLayerName !== 'none') {
+      setOWMLayer(STATE.activeLayerName);
+    }
+  });
+}
 
 function setOWMLayer(layerName) {
+  STATE.activeLayerName = layerName; // remember for style swap restore
   const map = STATE.map;
   if (!map) return;
   const legend = document.getElementById('mapLegend');
