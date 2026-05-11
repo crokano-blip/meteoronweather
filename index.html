@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meteoron — Weather</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet">
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.23.1/mapbox-gl.css" rel="stylesheet">
 <style>
 /* ════════════════════════════════════════════════════════
    M3 ARCTIC — CSS TOKEN SYSTEM
@@ -918,7 +918,7 @@ body{
 
 </main>
 
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.23.1/mapbox-gl.js"></script>
 <script>
 'use strict';
 
@@ -968,8 +968,16 @@ function degToCompass(deg) {
   return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(deg/22.5)%16];
 }
 
-function formatHour(d) {
-  return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});
+function formatHour(d, tz) {
+  try {
+    return d.toLocaleTimeString([], {
+      hour: '2-digit', minute: '2-digit', hour12: false,
+      timeZone: tz,
+    });
+  } catch {
+    // Fallback if timezone string is unrecognised
+    return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false});
+  }
 }
 
 function uvCategory(uv) {
@@ -1296,7 +1304,7 @@ function renderWeather(d, city, lat, lon) {
     if (t<now) continue;
     const [,hIcon]=wmoEntry(hourly.weather_code[i],t,lat,lon);
     hRows.push(`<div class="hour-card${hCount===0?' now':''}">
-      <div class="h-time">${hCount===0?'Now':formatHour(t)}</div>
+      <div class="h-time">${hCount===0?'Now':formatHour(t, d.timezone)}</div>
       <span class="h-icon">${hIcon}</span>
       <div class="h-temp">${convertTemp(hourly.temperature_2m[i])}°</div>
       <div class="h-rain">💧 ${hourly.precipitation_probability[i]}%</div>
@@ -1390,7 +1398,8 @@ function initMap() {
     center: [0, 20],
     zoom: 1.8,
     attributionControl: true,
-    failIfMajorPerformanceCaveat: false,
+    projection: 'mercator',
+    performanceMetricsCollection: false,
   });
 
   STATE.map.on('error', e => { console.error('Mapbox error:', e.error); });
