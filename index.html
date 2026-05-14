@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meteoron — Weather Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"/>
 <style>
@@ -134,6 +135,20 @@ body{
   color:var(--on-surface-dim);cursor:pointer;
   transition:background var(--dur-s) var(--ease),color var(--dur-s) var(--ease);
   font-size:1.1rem;
+}
+.material-symbols-rounded{
+  font-family:'Material Symbols Rounded';
+  font-weight:normal;font-style:normal;
+  font-size:1.375rem;line-height:1;
+  letter-spacing:normal;text-transform:none;
+  white-space:nowrap;word-wrap:normal;direction:ltr;
+  -webkit-font-smoothing:antialiased;
+  font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;
+  vertical-align:middle;user-select:none;
+}
+/* Filled variant for active states */
+.material-symbols-rounded.filled{
+  font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 24;
 }
 .icon-btn:hover{background:var(--surface-high);color:var(--on-surface)}
 .icon-btn.active{background:var(--primary-container);color:var(--primary)}
@@ -346,7 +361,7 @@ body{
   background:var(--primary-container);
   color:var(--on-primary-container);border-color:var(--primary);
 }
-.map-toggle-arrow{transition:transform var(--dur-m) var(--ease);font-size:.875rem}
+.map-toggle-arrow{transition:transform var(--dur-m) var(--ease)}
 .map-toggle.open .map-toggle-arrow{transform:rotate(180deg)}
 
 .map-card{
@@ -758,7 +773,7 @@ body{
 }
 .sat-toggle:hover{background:var(--surface-low);color:var(--on-surface)}
 .sat-toggle.open{background:var(--primary-container);color:var(--on-primary-container);border-color:var(--primary)}
-.sat-toggle-arrow{transition:transform var(--dur-m) var(--ease)}
+.sat-toggle-arrow{transition:transform var(--dur-m) var(--ease);display:inline-block}
 .sat-toggle.open .sat-toggle-arrow{transform:rotate(180deg)}
 
 .sat-card{
@@ -845,6 +860,117 @@ body{
 /* ════════════════════════════════════════════
    DATA CREDIT
    ════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════
+   SATELLITE MESSAGE LEGEND
+   ════════════════════════════════════════════ */
+.sat-legend-toggle {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 0; cursor:pointer;
+  border-top:1px solid var(--outline);
+  margin-top:4px;
+  user-select:none;
+  transition:color var(--dur-s) var(--ease);
+}
+.sat-legend-toggle:hover { color:var(--primary); }
+.sat-legend-title {
+  font-family:var(--font-data);
+  font-size:.625rem; font-weight:500;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:inherit;
+}
+.sat-legend-arrow {
+  transition:transform var(--dur-m) var(--ease);
+  color:var(--on-surface-dim);
+}
+.sat-legend-arrow.open { transform:rotate(180deg); }
+
+.sat-legend-body {
+  display:none;
+  flex-direction:column;
+  gap:16px;
+  padding-bottom:8px;
+}
+.sat-legend-body.open { display:flex; }
+
+.sat-legend-section-title {
+  font-family:var(--font-data);
+  font-size:.5625rem; font-weight:500;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--primary); margin-bottom:8px;
+}
+
+.sat-legend-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+  gap:4px 16px;
+}
+
+.sat-legend-row {
+  display:flex; align-items:baseline; gap:8px;
+  padding:3px 0;
+  border-bottom:1px solid var(--outline);
+}
+.sat-legend-row:last-child { border-bottom:none; }
+
+.sat-legend-code {
+  font-family:var(--font-data);
+  font-size:.75rem; font-weight:500;
+  color:var(--on-surface); white-space:nowrap;
+  min-width:80px;
+}
+.sat-legend-desc {
+  font-family:var(--font-ui);
+  font-size:.75rem; color:var(--on-surface-dim);
+  line-height:1.4;
+}
+
+/* Beaufort table */
+.sat-bft-table {
+  width:100%;
+  border-collapse:collapse;
+  font-family:var(--font-data);
+  font-size:.75rem;
+}
+.sat-bft-table th {
+  font-size:.5625rem; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--on-surface-dim);
+  text-align:left; padding:4px 8px 4px 0;
+  border-bottom:1px solid var(--outline);
+}
+.sat-bft-table td {
+  padding:4px 8px 4px 0;
+  border-bottom:1px solid var(--outline);
+  color:var(--on-surface);
+  vertical-align:middle;
+}
+.sat-bft-table tr:last-child td { border-bottom:none; }
+.sat-bft-table .bft-num {
+  font-weight:500; color:var(--primary);
+  min-width:32px;
+}
+.sat-bft-table .bft-range {
+  color:var(--on-surface-dim);
+}
+
+/* Download button */
+.sat-download-row {
+  display:flex; justify-content:flex-end;
+  padding-top:4px;
+}
+.sat-download-btn {
+  display:flex; align-items:center; gap:6px;
+  padding:8px 16px;
+  background:transparent; color:var(--primary);
+  border:1px solid var(--primary);
+  border-radius:var(--shape-full);
+  font-family:var(--font-ui); font-size:.8125rem; font-weight:600;
+  cursor:pointer;
+  transition:background var(--dur-s) var(--ease);
+}
+.sat-download-btn:hover { background:var(--primary-container); }
+
 .data-credit{
   font-family:var(--font-data);
   font-size:.5625rem;letter-spacing:.06em;
@@ -881,8 +1007,8 @@ body{
       <span class="brand-logo">METEORON</span>
       <span class="brand-tag">Weather Intelligence</span>
     </div>
-    <button class="icon-btn" id="themeToggleBtn" title="Toggle theme">☀</button>
-    <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    <button class="icon-btn" id="themeToggleBtn" title="Toggle theme"><span class="material-symbols-rounded" id="themeIcon">dark_mode</span></button>
+    <button class="icon-btn" id="settingsBtn" title="Settings"><span class="material-symbols-rounded">settings</span></button>
   </div>
 </header>
 
@@ -890,9 +1016,9 @@ body{
 <div class="scrim" id="settingsScrim"></div>
 <div class="drawer" id="settingsDrawer">
   <div class="drawer-header">
-    <span style="color:var(--primary);font-size:1rem">⚙</span>
+    <span class="material-symbols-rounded" style="color:var(--primary)">settings</span>
     <h2>Settings</h2>
-    <button class="icon-btn" id="settingsCloseBtn">✕</button>
+    <button class="icon-btn" id="settingsCloseBtn"><span class="material-symbols-rounded">close</span></button>
   </div>
   <div class="drawer-section">
     <div class="drawer-section-title">Temperature</div>
@@ -904,8 +1030,8 @@ body{
   <div class="drawer-section">
     <div class="drawer-section-title">Wind Speed</div>
     <div class="seg-group" id="windUnitGroup">
-      <button class="seg-btn active" data-val="kmh">km/h</button>
-      <button class="seg-btn" data-val="kn">Knots</button>
+      <button class="seg-btn" data-val="kmh">km/h</button>
+      <button class="seg-btn active" data-val="kn">Knots</button>
       <button class="seg-btn" data-val="ms">m/s</button>
       <button class="seg-btn" data-val="mph">mph</button>
     </div>
@@ -932,17 +1058,17 @@ body{
   <!-- SEARCH -->
   <div style="margin-bottom:16px">
     <div class="tab-bar">
-      <button class="tab active" id="tabCity">⊕ City</button>
-      <button class="tab" id="tabCoords">⊕ Coordinates</button>
+      <button class="tab active" id="tabCity"><span class="material-symbols-rounded">location_city</span> City</button>
+      <button class="tab" id="tabCoords"><span class="material-symbols-rounded">location_searching</span> Coordinates</button>
     </div>
     <div class="search-row" id="cityRow">
       <div class="search-field" style="flex:1;position:relative">
-        <span style="color:var(--on-surface-dim);font-size:.875rem;flex-shrink:0">⊕</span>
+        <span class="material-symbols-rounded" style="color:var(--on-surface-dim);font-size:1.25rem;flex-shrink:0">search</span>
         <input type="text" id="cityInput" placeholder="Search city or place…" autocomplete="off"/>
         <div id="suggestions"></div>
       </div>
       <button class="btn-filled" id="searchBtn">Search</button>
-      <button class="btn-outlined" id="locBtn" title="Use my location">⊕</button>
+      <button class="btn-outlined" id="locBtn" title="Use my location"><span class="material-symbols-rounded">my_location</span></button>
     </div>
     <div class="coord-row hidden" id="coordRow">
       <div class="coord-fields">
@@ -965,8 +1091,9 @@ body{
   <!-- MAP TOGGLE -->
   <div class="map-toggle-row">
     <button class="map-toggle" id="mapToggleBtn">
-      ⊕ <span id="mapToggleLabel">Show Map</span>
-      <span class="map-toggle-arrow">▼</span>
+      <span class="material-symbols-rounded">map</span>
+      <span id="mapToggleLabel">Show Map</span>
+      <span class="material-symbols-rounded map-toggle-arrow">expand_more</span>
     </button>
   </div>
 
@@ -992,13 +1119,13 @@ body{
     </div>
     <div class="map-coord-bar">
       <div class="coord-val" id="mapCoordDisplay">Click anywhere on the map to load the forecast</div>
-      <div class="coord-hint-text">⊕ Click to query</div>
+      <div class="coord-hint-text"><span class="material-symbols-rounded" style="font-size:.875rem;vertical-align:middle">ads_click</span> Click to query</div>
     </div>
   </div>
 
   <!-- WELCOME MESSAGE -->
   <div id="message">
-    <span class="msg-icon">◎</span>
+    <span class="msg-icon"><span class="material-symbols-rounded" style="font-size:3rem;color:var(--primary)">travel_explore</span></span>
     <div class="msg-title">Welcome to Meteoron</div>
     <div class="msg-sub">Search for a city, enter coordinates, or click the map to load the atmospheric state.</div>
   </div>
@@ -1021,8 +1148,9 @@ body{
     <!-- SAT TOGGLE -->
     <div class="sat-toggle-row" id="satToggleRow">
       <button class="sat-toggle" id="satToggleBtn">
-        ◎ <span id="satToggleLabel">Satellite Message</span>
-        <span class="sat-toggle-arrow">▼</span>
+        <span class="material-symbols-rounded">satellite_alt</span>
+        <span id="satToggleLabel">Satellite Message</span>
+        <span class="material-symbols-rounded sat-toggle-arrow">expand_more</span>
       </button>
     </div>
 
@@ -1034,8 +1162,8 @@ body{
           <div class="sat-selector-group">
             <div class="sat-selector-label">Recipient profile</div>
             <div class="seg-group" id="satProfileGroup">
-              <button class="seg-btn active" data-val="sailing">⛵ Sailing</button>
-              <button class="seg-btn" data-val="alpine">🧗 Alpine</button>
+              <button class="seg-btn active" data-val="sailing">Marine</button>
+              <button class="seg-btn" data-val="alpine">Alpine</button>
               <button class="seg-btn" data-val="general">General</button>
             </div>
           </div>
@@ -1069,6 +1197,113 @@ body{
         <div class="sat-translation">
           <div class="sat-translation-label">Plain Language</div>
           <div class="sat-translation-text" id="satTranslation"></div>
+
+        <!-- Message Key / Legend -->
+        <div class="sat-legend-toggle" id="satLegendToggle">
+          <span class="sat-legend-title">
+            <span class="material-symbols-rounded" style="font-size:1rem;vertical-align:middle;margin-right:6px">menu_book</span>
+            Message Key &amp; Beaufort Reference
+          </span>
+          <span class="material-symbols-rounded sat-legend-arrow" id="satLegendArrow">expand_more</span>
+        </div>
+
+        <div class="sat-legend-body" id="satLegendBody">
+
+          <!-- Time & Structure -->
+          <div>
+            <div class="sat-legend-section-title">Time &amp; Structure</div>
+            <div class="sat-legend-grid">
+              <div class="sat-legend-row"><span class="sat-legend-code">+6H / +12H</span><span class="sat-legend-desc">Hours from now</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">24H / 72H</span><span class="sat-legend-desc">Forecast window length</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">Now</span><span class="sat-legend-desc">Current conditions</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">⚠</span><span class="sat-legend-desc">Warning — read carefully</span></div>
+            </div>
+          </div>
+
+          <!-- Wind -->
+          <div>
+            <div class="sat-legend-section-title">Wind</div>
+            <div class="sat-legend-grid">
+              <div class="sat-legend-row"><span class="sat-legend-code">WS</span><span class="sat-legend-desc">Wind speed</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">WD</span><span class="sat-legend-desc">Wind direction (from)</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">kt</span><span class="sat-legend-desc">Knots</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">km/h</span><span class="sat-legend-desc">Kilometres per hour</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">m/s</span><span class="sat-legend-desc">Metres per second</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">mph</span><span class="sat-legend-desc">Miles per hour</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">N NE E SE</span><span class="sat-legend-desc">Compass direction</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">S SW W NW</span><span class="sat-legend-desc">Compass direction</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">BFTCHG</span><span class="sat-legend-desc">Beaufort scale change</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">WDSHFT</span><span class="sat-legend-desc">Wind direction shift</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">GALE</span><span class="sat-legend-desc">Gale force winds (Bft 7+)</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">HIWIND</span><span class="sat-legend-desc">High wind warning</span></div>
+            </div>
+          </div>
+
+          <!-- Weather Conditions -->
+          <div>
+            <div class="sat-legend-section-title">Weather Conditions</div>
+            <div class="sat-legend-grid">
+              <div class="sat-legend-row"><span class="sat-legend-code">CLR</span><span class="sat-legend-desc">Clear sky</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">PTCLD</span><span class="sat-legend-desc">Partly cloudy</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">OCST</span><span class="sat-legend-desc">Overcast</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">FOG</span><span class="sat-legend-desc">Fog or rime fog</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">DRZL</span><span class="sat-legend-desc">Drizzle</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">RN</span><span class="sat-legend-desc">Rain</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">HVYRN</span><span class="sat-legend-desc">Heavy rain</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">SHWR</span><span class="sat-legend-desc">Rain showers</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">HVSHWR</span><span class="sat-legend-desc">Heavy showers</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">SN</span><span class="sat-legend-desc">Snow</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">HVYSN</span><span class="sat-legend-desc">Heavy snow</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">SNSHWR</span><span class="sat-legend-desc">Snow showers</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">TSTM</span><span class="sat-legend-desc">Thunderstorm</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">SVTSTM</span><span class="sat-legend-desc">Severe thunderstorm</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">HVYWX</span><span class="sat-legend-desc">Heavy weather</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">TDROP</span><span class="sat-legend-desc">Temperature drop warning</span></div>
+              <div class="sat-legend-row"><span class="sat-legend-code">SNOW</span><span class="sat-legend-desc">Snow onset warning</span></div>
+            </div>
+          </div>
+
+          <!-- Beaufort Scale -->
+          <div>
+            <div class="sat-legend-section-title">Beaufort Scale Reference</div>
+            <table class="sat-bft-table">
+              <thead>
+                <tr>
+                  <th>Bft</th>
+                  <th>Description</th>
+                  <th>kt</th>
+                  <th>km/h</th>
+                  <th>Sea state</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="bft-num">0</td><td>Calm</td><td class="bft-range">&lt;1</td><td class="bft-range">&lt;1</td><td>Mirror-like</td></tr>
+                <tr><td class="bft-num">1</td><td>Light air</td><td class="bft-range">1–3</td><td class="bft-range">1–5</td><td>Ripples, no crests</td></tr>
+                <tr><td class="bft-num">2</td><td>Light breeze</td><td class="bft-range">4–6</td><td class="bft-range">6–11</td><td>Small wavelets</td></tr>
+                <tr><td class="bft-num">3</td><td>Gentle breeze</td><td class="bft-range">7–10</td><td class="bft-range">12–19</td><td>Large wavelets</td></tr>
+                <tr><td class="bft-num">4</td><td>Moderate breeze</td><td class="bft-range">11–16</td><td class="bft-range">20–28</td><td>Small waves</td></tr>
+                <tr><td class="bft-num">5</td><td>Fresh breeze</td><td class="bft-range">17–21</td><td class="bft-range">29–38</td><td>Moderate waves</td></tr>
+                <tr><td class="bft-num">6</td><td>Strong breeze</td><td class="bft-range">22–27</td><td class="bft-range">39–49</td><td>Large waves forming</td></tr>
+                <tr><td class="bft-num">7</td><td>Near gale</td><td class="bft-range">28–33</td><td class="bft-range">50–61</td><td>Sea heaps up</td></tr>
+                <tr><td class="bft-num">8</td><td>Gale</td><td class="bft-range">34–40</td><td class="bft-range">62–74</td><td>Moderately high waves</td></tr>
+                <tr><td class="bft-num">9</td><td>Severe gale</td><td class="bft-range">41–47</td><td class="bft-range">75–88</td><td>High waves</td></tr>
+                <tr><td class="bft-num">10</td><td>Storm</td><td class="bft-range">48–55</td><td class="bft-range">89–102</td><td>Very high waves</td></tr>
+                <tr><td class="bft-num">11</td><td>Violent storm</td><td class="bft-range">56–63</td><td class="bft-range">103–117</td><td>Exceptionally high waves</td></tr>
+                <tr><td class="bft-num">12</td><td>Hurricane</td><td class="bft-range">64+</td><td class="bft-range">118+</td><td>Air filled with foam</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Download -->
+          <div class="sat-download-row">
+            <button class="sat-download-btn" id="satDownloadLegend">
+              <span class="material-symbols-rounded" style="font-size:1rem">download</span>
+              Download Legend
+            </button>
+          </div>
+
+        </div><!-- /sat-legend-body -->
+
         </div>
       </div>
     </div>
@@ -1153,7 +1388,7 @@ const FIRE_RATINGS = [
 // STATE
 // ════════════════════════════════════════════════════════
 const S = {
-  tempUnit:'celsius', windUnit:'kmh', distUnit:'km', theme:'light',
+  tempUnit:'celsius', windUnit:'kn', distUnit:'km', theme:'light',
   lat:null, lon:null, city:null,
   data:null, marineData:null,
   elevation:0, isLand:true, context:'general',
@@ -1304,40 +1539,10 @@ function beaufortLevel(kmh) {
   return 12;
 }
 
-// SVG Beaufort symbol — circle + barbs + pennants (WMO synoptic notation)
+// Erik Flowers Beaufort icon — wi-wind-beaufort-0 through wi-wind-beaufort-12
 function beaufortSVG(level, size=22) {
-  const cx=size/2, cy=size/2, r=(size/2)-2;
-  const sw=1.75;
-  let paths = `<circle cx="${cx}" cy="${cy}" r="${r}" stroke="currentColor" stroke-width="${sw}" fill="none"/>`;
-
-  if (level === 0) {
-    // Calm — just circle, tiny inner dot
-    paths += `<circle cx="${cx}" cy="${cy}" r="1.5" fill="currentColor"/>`;
-  } else {
-    // Staff extends upward from top of circle
-    const staffTop = cy - r - 8;
-    paths += `<line x1="${cx}" y1="${cy-r}" x2="${cx}" y2="${staffTop}" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round"/>`;
-    // Barbs and pennants
-    let barbs = level;
-    let y = staffTop;
-    const step = 4;
-    while (barbs >= 2) {
-      // Pennant (filled triangle) for every 5 knots pair
-      if (barbs >= 2 && level >= 8 && barbs === level) {
-        paths += `<polygon points="${cx},${y} ${cx+7},${y+2} ${cx},${y+4}" fill="currentColor"/>`;
-        barbs -= 2; y += step + 2;
-      } else {
-        // Full barb
-        paths += `<line x1="${cx}" y1="${y}" x2="${cx+7}" y2="${y+2}" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round"/>`;
-        barbs--; y += step;
-      }
-    }
-    if (barbs === 1) {
-      // Half barb
-      paths += `<line x1="${cx}" y1="${y}" x2="${cx+4}" y2="${y+1}" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round"/>`;
-    }
-  }
-  return `<svg width="${size}" height="${size+10}" viewBox="0 0 ${size} ${size+10}" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;color:currentColor">${paths}</svg>`;
+  const fontSize = size === 18 ? '1.1rem' : size === 28 ? '1.75rem' : '1.375rem';
+  return `<i class="wi wi-wind-beaufort-${level}" style="font-size:${fontSize};vertical-align:middle"></i>`;
 }
 
 // ════════════════════════════════════════════════════════
@@ -1427,7 +1632,7 @@ async function fetchMarineData(lat, lon) {
 function loadPrefs() {
   try {
     const p = JSON.parse(localStorage.getItem('meteoron_prefs')||'{}');
-    S.tempUnit = p.temp||'celsius'; S.windUnit = p.wind||'kmh';
+    S.tempUnit = p.temp||'celsius'; S.windUnit = p.wind||'kn';
     S.distUnit = p.dist||'km';     S.theme    = p.theme||'light';
   } catch {}
 }
@@ -1452,7 +1657,7 @@ function applyPrefsToUI() {
 
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme',t);
-  document.getElementById('themeToggleBtn').textContent = t==='dark'?'☀':'☽';
+  document.getElementById('themeIcon').textContent = t==='dark'?'light_mode':'dark_mode';
   if (S.mapInitialised) swapMapTiles(t);
 }
 
@@ -1625,7 +1830,7 @@ function renderWeather(d,city,lat,lon) {
 
   // Context badge
   const badge = document.getElementById('contextBadge');
-  const ctxLabels = {marine:'⊕ Marine',alpine:'⊕ Alpine',fire:'⊕ Fire Watch',general:'⊕ General'};
+  const ctxLabels = {marine:'Marine',alpine:'Alpine',fire:'Fire Watch',general:'General'};
   const ctxClass  = {marine:'marine',alpine:'alpine',fire:'fire',general:''};
 
   // Check fire context dynamically
@@ -1667,7 +1872,7 @@ function renderWeather(d,city,lat,lon) {
       <div class="h-time">${hCount===0?'Now':formatHour(t,d.timezone)}</div>
       <div class="h-icon"><i class="wi ${hWiClass}"></i></div>
       <div class="h-temp">${convertTemp(hourly.temperature_2m[i])}°</div>
-      <div class="h-rain">💧 ${hourly.precipitation_probability[i]}%</div>
+      <div class="h-rain"><i class="wi wi-raindrop"></i> ${hourly.precipitation_probability[i]}%</div>
     </div>`);
     hCount++;
   }
@@ -1692,7 +1897,7 @@ function renderWeather(d,city,lat,lon) {
       <div class="day-name">${i===0?'Today':dayNames[dt.getDay()]}</div>
       <div class="day-bft"><i class="wi ${dWiClass}" style="font-size:1.1rem"></i></div>
       <div class="day-desc">${esc(dLabel)}</div>
-      <div class="day-rain">💧 ${daily.precipitation_probability_max[i]}%</div>
+      <div class="day-rain"><i class="wi wi-raindrop"></i> ${daily.precipitation_probability_max[i]}%</div>
       <div class="day-range">
         <span class="day-hi">${convertTemp(daily.temperature_2m_max[i])}°</span>
         <span class="day-lo">${convertTemp(daily.temperature_2m_min[i])}°</span>
@@ -2069,6 +2274,110 @@ async function loadWindAnimation(lat,lon) {
   } catch(e) {
     console.warn('Wind animation unavailable:',e);
   }
+}
+
+// ── Legend toggle & download ──────────────────────────────────────────────
+document.getElementById('satLegendToggle').addEventListener('click', () => {
+  const body  = document.getElementById('satLegendBody');
+  const arrow = document.getElementById('satLegendArrow');
+  const open  = body.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+});
+
+document.getElementById('satDownloadLegend').addEventListener('click', () => {
+  const blob = new Blob([buildLegendText()], {type:'text/plain;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'meteoron-message-key.txt';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+});
+
+function buildLegendText() {
+  const L = '='.repeat(54);
+  return [
+    'METEORON - SATELLITE MESSAGE KEY',
+    'Weather Intelligence',
+    L,
+    '',
+    'TIME & STRUCTURE',
+    '+6H / +12H    Hours from now',
+    '24H / 72H     Forecast window length',
+    'Now           Current conditions',
+    '!             Warning - read carefully',
+    '',
+    'WIND',
+    'WS            Wind speed',
+    'WD            Wind direction (from)',
+    'kt            Knots',
+    'km/h          Kilometres per hour',
+    'm/s           Metres per second',
+    'mph           Miles per hour',
+    'N NE E SE S SW W NW  Compass direction',
+    'BFTCHG        Beaufort scale change',
+    'WDSHFT        Wind direction shift',
+    'GALE          Gale force winds (Bft 7+)',
+    'HIWIND        High wind warning',
+    '',
+    'WEATHER CONDITIONS',
+    'CLR           Clear sky',
+    'PTCLD         Partly cloudy',
+    'OCST          Overcast',
+    'FOG           Fog or rime fog',
+    'DRZL          Drizzle',
+    'RN            Rain',
+    'HVYRN         Heavy rain',
+    'SHWR          Rain showers',
+    'HVSHWR        Heavy showers',
+    'SN            Snow',
+    'HVYSN         Heavy snow',
+    'SNSHWR        Snow showers',
+    'TSTM          Thunderstorm',
+    'SVTSTM        Severe thunderstorm',
+    'HVYWX         Heavy weather',
+    'TDROP         Temperature drop warning',
+    'SNOW          Snow onset warning',
+    '',
+    L,
+    'BEAUFORT SCALE REFERENCE',
+    '',
+    'Bft  Description        Knots    km/h     Sea State',
+    '---  -----------------  -------  -------  ------------------------',
+    '0    Calm               <1       <1       Mirror-like',
+    '1    Light air          1-3      1-5      Ripples, no crests',
+    '2    Light breeze       4-6      6-11     Small wavelets',
+    '3    Gentle breeze      7-10     12-19    Large wavelets',
+    '4    Moderate breeze    11-16    20-28    Small waves',
+    '5    Fresh breeze       17-21    29-38    Moderate waves',
+    '6    Strong breeze      22-27    39-49    Large waves forming',
+    '7    Near gale          28-33    50-61    Sea heaps up',
+    '8    Gale               34-40    62-74    Moderately high waves',
+    '9    Severe gale        41-47    75-88    High waves',
+    '10   Storm              48-55    89-102   Very high waves',
+    '11   Violent storm      56-63    103-117  Exceptionally high waves',
+    '12   Hurricane          64+      118+     Air filled with foam',
+    '',
+    L,
+    'PROFILES',
+    '',
+    'Sailing    Wind-first. Triggers: Beaufort changes,',
+    '           direction shifts, gale force, thunderstorms.',
+    '',
+    'Alpine     Temp-first. Triggers: temp drop, snow onset,',
+    '           high wind, thunderstorms.',
+    '',
+    'General    Balanced. Triggers: thunderstorms,',
+    '           heavy weather, high wind.',
+    '',
+    'DEVICES',
+    'Garmin inReach    160 character limit',
+    'SPOT X            100 character limit',
+    '',
+    L,
+    'Generated by Meteoron',
+    'Data: open-meteo.com',
+    'Not for emergency use. Verify with official sources.',
+  ].join('\n');
 }
 
 // ════════════════════════════════════════════════════════
