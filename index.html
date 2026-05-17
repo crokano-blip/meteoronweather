@@ -6,7 +6,7 @@
 <title>Meteoron — Weather Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"/>
 <style>
 /* ════════════════════════════════════════════════════════
@@ -400,8 +400,6 @@ body{
 #map{
   height:440px;width:100%;
   cursor:crosshair!important;
-  filter:var(--map-filter);
-  transition:filter var(--dur-m) var(--ease);
 }
 
 .map-legend{
@@ -428,40 +426,56 @@ body{
 .coord-val strong{color:var(--primary);font-weight:500}
 .coord-hint-text{font-size:.625rem;color:var(--on-surface-dim);opacity:.7}
 
-/* Leaflet overrides */
-.leaflet-container{font-family:var(--font-ui)!important}
-.leaflet-control-zoom a{
-  background:var(--surface)!important;color:var(--on-surface)!important;
-  border-color:var(--outline)!important;
+/* MapLibre GL overrides */
+.maplibregl-map { font-family:var(--font-ui)!important; }
+.maplibregl-ctrl-group {
+  background:var(--surface)!important;
+  border:1px solid var(--outline)!important;
+  border-radius:var(--shape-md)!important;
+  box-shadow:none!important;
 }
-.leaflet-control-zoom a:hover{background:var(--surface-high)!important}
-.leaflet-control-attribution{
+.maplibregl-ctrl-group button {
+  background:transparent!important;
+  width:36px!important; height:36px!important;
+}
+.maplibregl-ctrl-group button+button {
+  border-top:1px solid var(--outline)!important;
+}
+.maplibregl-ctrl-attrib {
   background:color-mix(in srgb,var(--surface) 85%,transparent)!important;
-  color:var(--on-surface-dim)!important;font-size:.55rem!important;
+  color:var(--on-surface-dim)!important;
+  font-size:.55rem!important;
+  border-radius:var(--shape-sm)!important;
   backdrop-filter:blur(4px);
 }
-.leaflet-control-attribution a{color:var(--primary)!important}
-.leaflet-popup-content-wrapper{
-  background:var(--surface)!important;color:var(--on-surface)!important;
-  font-family:var(--font-ui)!important;font-size:.75rem!important;
+.maplibregl-ctrl-attrib a { color:var(--primary)!important; }
+.maplibregl-popup-content {
+  background:var(--surface)!important;
+  color:var(--on-surface)!important;
+  font-family:var(--font-ui)!important;
+  font-size:.75rem!important;
   border-radius:var(--shape-lg)!important;
   border:1px solid var(--outline)!important;
   box-shadow:0 8px 32px rgba(0,47,167,.15)!important;
   padding:12px 16px!important;
 }
-.leaflet-popup-tip-container{display:none!important}
-.leaflet-popup-close-button{
+.maplibregl-popup-tip { display:none!important; }
+.maplibregl-popup-close-button {
   color:var(--on-surface-dim)!important;
-  top:8px!important;right:10px!important;
+  font-size:1rem!important;
+  top:6px!important; right:8px!important;
+  background:transparent!important;
 }
+.maplibregl-ctrl-compass { display:none; }
 
-/* Custom map marker */
-.met-marker{
-  width:14px;height:14px;
+/* Custom marker */
+.met-marker {
+  width:14px; height:14px;
   background:var(--primary);
-  border:2.5px solid var(--on-primary);
+  border:2.5px solid #fff;
   border-radius:50%;
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 30%,transparent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 35%,transparent);
+  cursor:pointer;
 }
 
 /* ════════════════════════════════════════════
@@ -1101,11 +1115,11 @@ body{
   <div class="map-card" id="mapPanel">
     <div class="map-layer-bar">
       <span class="layer-label-text">Layer:</span>
-      <button class="chip active" data-layer="none">None</button>
-      <button class="chip" data-layer="precipitation_new">Rain</button>
-      <button class="chip wind-chip" data-layer="wind_new">Wind</button>
-      <button class="chip" data-layer="temp_new">Temp</button>
-      <button class="chip" data-layer="clouds_new">Clouds</button>
+      <button class="chip active" data-layer="temp_new"><span class="material-symbols-rounded" style="font-size:.9rem">thermometer</span> Temp</button>
+      <button class="chip wind-chip" data-layer="wind_new"><span class="material-symbols-rounded" style="font-size:.9rem">air</span> Wind</button>
+      <button class="chip" data-layer="precipitation_new"><span class="material-symbols-rounded" style="font-size:.9rem">rainy</span> Rain</button>
+      <button class="chip" data-layer="clouds_new"><span class="material-symbols-rounded" style="font-size:.9rem">cloud</span> Clouds</button>
+      <button class="chip" data-layer="pressure_new"><span class="material-symbols-rounded" style="font-size:.9rem">compress</span> Pressure</button>
     </div>
     <div id="map"></div>
     <div class="map-legend" id="mapLegend">
@@ -1311,8 +1325,7 @@ body{
     <p class="data-credit">
       Weather: <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> ·
       Layers: <a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a> ·
-      Maps: <a href="https://leafletjs.com" target="_blank">Leaflet</a> /
-      <a href="https://openfreemap.org" target="_blank">OpenFreeMap</a>
+      Maps: <a href="https://maplibre.org" target="_blank">MapLibre GL JS</a>
     </p>
   </div>
 
@@ -1325,8 +1338,7 @@ body{
   <div class="sheet-inner" id="sheetInner"></div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-velocity@2.1.3/dist/leaflet-velocity.min.js"></script>
+<script src="https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.js"></script>
 <script>
 'use strict';
 
@@ -1335,8 +1347,7 @@ body{
 // ════════════════════════════════════════════════════════
 const OWM_PROXY = 'https://rapid-paper-a152meteoron-owm-proxy.crokano.workers.dev';
 
-const OFMAP_LIGHT = 'https://tiles.openfreemap.org/styles/positron';
-const OFMAP_DARK  = 'https://tiles.openfreemap.org/styles/dark';
+
 
 // OpenFreeMap tile URLs (raster fallback via CARTO)
 const TILE_LIGHT = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
@@ -1368,11 +1379,11 @@ const BFT_MARINE = [
 ];
 
 const LEGENDS = {
-  none:null,
-  precipitation_new:{title:'Precipitation intensity',gradient:'linear-gradient(to right,#a8f0ff,#4dc4ff,#0078c8,#0000c8,#8000c8,#ff00c8)',min:'0 mm/h',mid:'Moderate',max:'200+ mm/h'},
-  wind_new:{title:'Wind speed',gradient:'linear-gradient(to right,#d4f5d4,#a8e6a8,#ffff64,#ffc800,#ff6400,#c80000)',min:'Calm',mid:'~50 km/h',max:'200+ km/h'},
-  temp_new:{title:'Temperature',gradient:'linear-gradient(to right,#8000ff,#0000ff,#0080ff,#00c8ff,#00ff80,#ffff00,#ff8000,#ff0000)',min:'−40°',mid:'0°',max:'+40°'},
-  clouds_new:{title:'Cloud cover',gradient:'linear-gradient(to right,#e8f4ff,#b0cce8,#7aaad0,#3a6a9c,#1a3a5c)',min:'Clear 0%',mid:'50%',max:'100%'},
+  temp_new:{title:'Temperature',gradient:'linear-gradient(to right,#821692,#3a0af5,#0000ff,#0a74ff,#00d4ff,#00ff80,#a8e600,#ffff00,#ff8000,#ff0000)',min:'−40°',mid:'0°',max:'+40°'},
+  wind_new:{title:'Wind speed',gradient:'linear-gradient(to right,#ffffff,#d4f5d4,#a8e6a8,#78d278,#ffff64,#ffc800,#ff8c00,#ff6400,#e00000,#c80000)',min:'Calm 0',mid:'~50 km/h',max:'200+ km/h'},
+  precipitation_new:{title:'Precipitation intensity',gradient:'linear-gradient(to right,#a0f0ff,#64c8ff,#0096ff,#0050c8,#8000c8,#c800c8)',min:'0 mm/h',mid:'Moderate',max:'200+ mm/h'},
+  clouds_new:{title:'Cloud cover',gradient:'linear-gradient(to right,#ffffff,#e0e8f0,#b8cce0,#8aaac8,#5a80a8,#2a5080,#0a2850)',min:'Clear 0%',mid:'50%',max:'Overcast 100%'},
+  pressure_new:{title:'Sea level pressure',gradient:'linear-gradient(to right,#ff4040,#ff9900,#ffff40,#80ff40,#40c0ff,#8040ff)',min:'Low 970 hPa',mid:'Normal',max:'High 1050 hPa'},
 };
 
 const FIRE_RATINGS = [
@@ -1392,8 +1403,8 @@ const S = {
   lat:null, lon:null, city:null,
   data:null, marineData:null,
   elevation:0, isLand:true, context:'general',
-  map:null, tileLayer:null, owmLayer:null, velocityLayer:null,
-  mapInitialised:false, activeLayerName:'none',
+  map:null, owmLayer:null, velocityLayer:null,
+  mapInitialised:false, activeLayerName:'temp_new',
   mbMarker:null, mbPopup:null,
 };
 
@@ -1658,7 +1669,7 @@ function applyPrefsToUI() {
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme',t);
   document.getElementById('themeIcon').textContent = t==='dark'?'light_mode':'dark_mode';
-  if (S.mapInitialised) swapMapTiles(t);
+  if (S.mapInitialised) swapMapStyle(t);
 }
 
 // ════════════════════════════════════════════════════════
@@ -2085,40 +2096,81 @@ mapToggleBtn.addEventListener('click',()=>{
   const open = mapPanel.classList.toggle('open');
   mapToggleBtn.classList.toggle('open',open);
   mapToggleLabel.textContent = open?'Hide Map':'Show Map';
-  if (open && !S.mapInitialised) initMap();
-  else if (open && S.map) S.map.invalidateSize();
+  if (open && !S.mapInitialised) {
+    // Delay ensures container has rendered dimensions before MapLibre initialises
+    setTimeout(initMap, 80);
+  } else if (open && S.map) {
+    S.map.resize();
+  }
 });
 
-function getTileUrl(theme) {
-  return theme==='dark'
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-}
+// ── OpenFreeMap styles — confirmed available: liberty, positron, bright, dark, fiord
+// Positron: clean, minimal, POIs removed — best for data overlays
+// Dark: low-light variant for dark mode
+const OFM_STYLES = {
+  light: 'https://tiles.openfreemap.org/styles/positron',
+  dark:  'https://tiles.openfreemap.org/styles/dark',
+};
 
-function getTileAttrib() {
-  return '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com">CARTO</a>';
+function buildMapStyle(theme) {
+  // Return the OpenFreeMap style URL directly —
+  // MapLibre fetches and applies it as a complete style spec
+  return OFM_STYLES[theme] || OFM_STYLES.light;
 }
 
 function initMap() {
   S.mapInitialised = true;
-  S.map = L.map('map',{center:[20,0],zoom:2,zoomControl:true});
 
-  S.tileLayer = L.tileLayer(getTileUrl(S.theme),{
-    attribution:getTileAttrib(),
-    subdomains:'abcd',maxZoom:19,
-  }).addTo(S.map);
+  S.map = new maplibregl.Map({
+    container: 'map',
+    style: buildMapStyle(S.theme),
+    center: [0, 20],
+    zoom: 1.8,
+    attributionControl: true,
+  });
 
-  S.map.on('click',async e=>{
-    const{lat,lng:lon}=e.latlng;
-    placeMarker(lat,lon);
-    updateCoordBar(lat,lon);
-    let name=`${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+  // Fallback if OpenFreeMap style fails to load
+  S.map.on('error', e => {
+    console.warn('MapLibre error:', e.error?.message || e);
+    // If style failed, try positron as fallback
+    if (e.error?.message?.includes('style') || e.error?.status === 404) {
+      console.info('Falling back to positron style');
+      S.map.setStyle('https://tiles.openfreemap.org/styles/positron');
+    }
+  });
+
+  S.map.addControl(new maplibregl.NavigationControl({showCompass:false}), 'top-right');
+  S.map.getCanvas().style.cursor = 'crosshair';
+
+  S.map.on('load', () => {
+    // Add OWM raster source on top of basemap
+    S.map.addSource('owm-weather', {
+      type: 'raster',
+      tiles: [`${OWM_PROXY}/map/temp_new/{z}/{x}/{y}.png`],
+      tileSize: 256,
+      attribution: '© OpenWeatherMap',
+    });
+    S.map.addLayer({
+      id: 'owm-weather-layer',
+      type: 'raster',
+      source: 'owm-weather',
+      paint: { 'raster-opacity': 0.95 },
+    });
+    updateLegend('temp_new');
+    S.activeLayerName = 'temp_new';
+  });
+
+  S.map.on('click', async e => {
+    const {lng:lon, lat} = e.lngLat;
+    placeMarker(lat, lon);
+    updateCoordBar(lat, lon);
+    let name = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
     try {
-      const d=await fetchWT(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,5000);
-      const p=d.address?.city||d.address?.town||d.address?.village||d.address?.county||d.address?.state;
-      if(p) name=p+(d.address?.country?', '+d.address.country:'');
+      const d = await fetchWT(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,5000);
+      const p = d.address?.city||d.address?.town||d.address?.village||d.address?.county||d.address?.state;
+      if(p) name = p+(d.address?.country?', '+d.address.country:'');
     } catch {}
-    fetchWeather(lat,lon,name);
+    fetchWeather(lat, lon, name);
   });
 
   document.querySelectorAll('.chip').forEach(chip=>{
@@ -2130,150 +2182,216 @@ function initMap() {
   });
 }
 
-function swapMapTiles(theme) {
-  if (!S.map||!S.tileLayer) return;
-  S.map.removeLayer(S.tileLayer);
-  S.tileLayer = L.tileLayer(getTileUrl(theme),{
-    attribution:getTileAttrib(),subdomains:'abcd',maxZoom:19,
-  }).addTo(S.map);
-  if (S.owmLayer) { S.owmLayer.remove(); S.owmLayer.addTo(S.map); }
-  if (S.velocityLayer) { S.velocityLayer.remove(); S.velocityLayer.addTo(S.map); }
-}
-
-function placeMarker(lat,lon) {
+function swapMapStyle(theme) {
   if (!S.map) return;
-  const el = L.divIcon({className:'',html:'<div class="met-marker"></div>',iconSize:[14,14],iconAnchor:[7,7]});
+  S.map.setStyle(buildMapStyle(theme));
+  S.map.once('styledata', () => {
+    if (!S.map.getSource('owm-weather')) {
+      S.map.addSource('owm-weather', {
+        type: 'raster',
+        tiles: [`${OWM_PROXY}/map/${S.activeLayerName}/{z}/{x}/{y}.png`],
+        tileSize: 256,
+        attribution: '© OpenWeatherMap',
+      });
+      S.map.addLayer({
+        id: 'owm-weather-layer',
+        type: 'raster',
+        source: 'owm-weather',
+        paint: { 'raster-opacity': 0.95 },
+      });
+    }
+  });
+}
+
+function placeMarker(lat, lon) {
+  if (!S.map) return;
   if (!S.mbMarker) {
-    S.mbPopup = L.popup({offset:[0,-8],closeButton:true,maxWidth:200});
-    S.mbMarker = L.marker([lat,lon],{icon:el}).bindPopup(S.mbPopup).addTo(S.map);
+    const el = document.createElement('div');
+    el.className = 'met-marker';
+    S.mbPopup = new maplibregl.Popup({offset:12, closeButton:true, maxWidth:'220px'});
+    S.mbMarker = new maplibregl.Marker({element:el, anchor:'center'})
+      .setLngLat([lon,lat]).setPopup(S.mbPopup).addTo(S.map);
   } else {
-    S.mbMarker.setIcon(el);
-    S.mbMarker.setLatLng([lat,lon]);
+    S.mbMarker.setLngLat([lon,lat]);
   }
-  S.mbPopup.setContent(`<b>Selected location</b><br>Lat: <b>${lat.toFixed(5)}</b><br>Lon: <b>${lon.toFixed(5)}</b>`);
-  S.mbMarker.openPopup();
-  S.map.flyTo([lat,lon],Math.max(S.map.getZoom(),6),{duration:0.8});
+  S.mbPopup.setHTML(`<b>Selected location</b><br>Lat: <b>${lat.toFixed(5)}</b><br>Lon: <b>${lon.toFixed(5)}</b>`);
+  if (!S.mbPopup.isOpen()) S.mbMarker.togglePopup();
+  S.map.flyTo({center:[lon,lat], zoom:Math.max(S.map.getZoom(),6), duration:800, essential:true});
 }
 
-function syncMapMarker(lat,lon,city) {
+function syncMapMarker(lat, lon, city) {
   if (!S.map||!S.mapInitialised) return;
-  placeMarker(lat,lon); updateCoordBar(lat,lon);
-  if (S.mbPopup) S.mbPopup.setContent(`<b>${esc(city)}</b><br>Lat: <b>${lat.toFixed(5)}</b><br>Lon: <b>${lon.toFixed(5)}</b>`);
+  placeMarker(lat, lon);
+  updateCoordBar(lat, lon);
+  if (S.mbPopup) S.mbPopup.setHTML(`<b>${esc(city)}</b><br>Lat: <b>${lat.toFixed(5)}</b><br>Lon: <b>${lon.toFixed(5)}</b>`);
 }
 
-function updateCoordBar(lat,lon) {
-  document.getElementById('mapCoordDisplay').innerHTML=
+function updateCoordBar(lat, lon) {
+  document.getElementById('mapCoordDisplay').innerHTML =
     `Lat: <strong>${lat.toFixed(5)}</strong> &nbsp; Lon: <strong>${lon.toFixed(5)}</strong>`;
 }
 
-// OWM layers + wind velocity animation
-function setOWMLayer(layerName) {
-  if (!S.map) return;
+function updateLegend(layerName) {
   const legend = document.getElementById('mapLegend');
+  const data = LEGENDS[layerName];
+  if (!data) { legend.classList.remove('show'); return; }
+  document.getElementById('legendTitle').textContent = data.title;
+  document.getElementById('legendBar').style.background = data.gradient;
+  document.getElementById('legendMin').textContent = data.min;
+  document.getElementById('legendMid').textContent = data.mid;
+  document.getElementById('legendMax').textContent = data.max;
+  legend.classList.add('show');
+}
 
-  // Remove existing layers
-  if (S.owmLayer)      { S.map.removeLayer(S.owmLayer); S.owmLayer=null; }
-  if (S.velocityLayer) { S.map.removeLayer(S.velocityLayer); S.velocityLayer=null; }
+function setOWMLayer(layerName) {
+  S.activeLayerName = layerName;
 
-  if (layerName==='none') { legend.classList.remove('show'); return; }
+  // Stop wind animation when leaving wind layer
+  if (layerName !== 'wind_new') stopWindAnimation();
 
-  // Add OWM tile layer
-  S.owmLayer = L.tileLayer(`${OWM_PROXY}/map/${layerName}/{z}/{x}/{y}.png`,{
-    opacity:0.85,maxZoom:19,attribution:'© OpenWeatherMap',
-  }).addTo(S.map);
+  if (!S.map || !S.map.getSource('owm-weather')) return;
 
-  // Wind velocity animation when wind layer selected
-  if (layerName==='wind_new' && S.lat!=null) {
-    loadWindAnimation(S.lat,S.lon);
-  }
+  // Swap tile URL in-place
+  S.map.getSource('owm-weather').setTiles(
+    [`${OWM_PROXY}/map/${layerName}/{z}/{x}/{y}.png`]
+  );
+  S.map.setPaintProperty('owm-weather-layer', 'raster-opacity', 0.95);
+  updateLegend(layerName);
 
-  const data=LEGENDS[layerName];
-  if (data) {
-    document.getElementById('legendTitle').textContent=data.title;
-    document.getElementById('legendBar').style.background=data.gradient;
-    document.getElementById('legendMin').textContent=data.min;
-    document.getElementById('legendMid').textContent=data.mid;
-    document.getElementById('legendMax').textContent=data.max;
-    legend.classList.add('show');
+  // Start wind animation when wind layer selected
+  if (layerName === 'wind_new' && S.lat != null) {
+    loadWindAnimation(S.lat, S.lon);
   }
 }
 
-async function loadWindAnimation(lat,lon) {
-  // Fetch U/V wind components from Open-Meteo
+// ── Wind particle animation — canvas-based, mirrors OWM style ────────────
+let windCanvas = null;
+let windCtx    = null;
+let windAnim   = null;
+let windParticles = [];
+
+async function loadWindAnimation(lat, lon) {
+  // Remove previous animation
+  stopWindAnimation();
+
   try {
+    // Fetch U/V wind components from Open-Meteo for a grid around the location
+    // We fetch multiple points to build a regional wind field
+    const gridPoints = [];
+    const step = 2; // degrees
+    const range = 6;
+    for (let dlat = -range; dlat <= range; dlat += step) {
+      for (let dlon = -range; dlon <= range; dlon += step) {
+        gridPoints.push({
+          lat: Math.max(-90, Math.min(90, lat + dlat)),
+          lon: ((lon + dlon + 180) % 360) - 180,
+        });
+      }
+    }
+
+    // Batch fetch — use just the centre point for now, approximate field
     const params = new URLSearchParams({
-      latitude:lat,longitude:lon,
-      hourly:'wind_u_component_10m,wind_v_component_10m',
-      timezone:'auto',forecast_days:1,
+      latitude:  lat,
+      longitude: lon,
+      hourly: 'wind_u_component_10m,wind_v_component_10m',
+      timezone: 'auto',
+      forecast_days: 1,
     });
-    const d = await fetchWT(`https://api.open-meteo.com/v1/forecast?${params}`,8000);
-    const u = d.hourly.wind_u_component_10m;
-    const v = d.hourly.wind_v_component_10m;
 
-    // Build GeoJSON wind data for Leaflet.VelocityLayer
-    // VelocityLayer expects global grid data — we create a simple 2-degree grid
-    // centred on the queried location for local animation
-    const gridRes = 2.0; // degrees
-    const gridW = 10, gridH = 10;
-    const lonMin = lon - (gridW/2)*gridRes;
-    const latMax = lat + (gridH/2)*gridRes;
+    const d = await fetchWT(`https://api.open-meteo.com/v1/forecast?${params}`, 8000);
+    const now = new Date();
+    let idx = 0;
+    for (let i = 0; i < d.hourly.time.length; i++) {
+      if (new Date(d.hourly.time[i]) >= now) { idx = i; break; }
+    }
 
-    // Use first available hour's values
-    const uVal = u[0]||0, vVal = v[0]||0;
+    const uVal = d.hourly.wind_u_component_10m[idx] || 0;
+    const vVal = d.hourly.wind_v_component_10m[idx] || 0;
+    const speed = Math.sqrt(uVal*uVal + vVal*vVal); // m/s
 
-    // Build uniform wind field (simplified — single value across grid)
-    const uData = [], vData = [];
-    for(let i=0;i<gridW*gridH;i++) { uData.push(uVal); vData.push(vVal); }
+    // Create canvas overlay on top of map
+    const mapEl = document.getElementById('map');
+    windCanvas = document.createElement('canvas');
+    windCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;';
+    windCanvas.width  = mapEl.offsetWidth;
+    windCanvas.height = mapEl.offsetHeight;
+    mapEl.style.position = 'relative';
+    mapEl.appendChild(windCanvas);
+    windCtx = windCanvas.getContext('2d');
 
-    const windData = [
-      {
-        header:{
-          parameterCategory:2,parameterNumber:2,
-          la1:latMax,lo1:lonMin,
-          la2:latMax-(gridH-1)*gridRes,
-          lo2:lonMin+(gridW-1)*gridRes,
-          dx:gridRes,dy:gridRes,
-          nx:gridW,ny:gridH,
-        },
-        data:uData,
-      },
-      {
-        header:{
-          parameterCategory:2,parameterNumber:3,
-          la1:latMax,lo1:lonMin,
-          la2:latMax-(gridH-1)*gridRes,
-          lo2:lonMin+(gridW-1)*gridRes,
-          dx:gridRes,dy:gridRes,
-          nx:gridW,ny:gridH,
-        },
-        data:vData,
-      },
-    ];
+    // Particle count scales with wind speed
+    const count = Math.min(150, Math.max(60, Math.round(speed * 12)));
+    const speedPx = Math.max(0.5, speed * 1.8); // px per frame
 
-    if (S.velocityLayer) { S.map.removeLayer(S.velocityLayer); }
+    // Colour scale matching OWM wind layer
+    function windColour(spd) {
+      if (spd < 1)  return 'rgba(255,255,255,0.7)';
+      if (spd < 3)  return 'rgba(212,245,212,0.75)';
+      if (spd < 6)  return 'rgba(168,230,168,0.8)';
+      if (spd < 10) return 'rgba(255,255,100,0.8)';
+      if (spd < 15) return 'rgba(255,200,0,0.85)';
+      if (spd < 20) return 'rgba(255,140,0,0.85)';
+      return 'rgba(255,80,0,0.9)';
+    }
 
-    S.velocityLayer = L.velocityLayer({
-      displayValues:true,
-      displayOptions:{
-        velocityType:'Wind',
-        position:'bottomleft',
-        emptyString:'No wind data',
-        angleConvention:'bearingCW',
-        displayPosition:'bottomleft',
-        displayEmptyString:'No wind data',
-        speedUnit: S.windUnit==='kn'?'kt':S.windUnit==='ms'?'m/s':'km/h',
-      },
-      data:windData,
-      maxVelocity:30,
-      colorScale:['#d4f5d4','#a8e6a8','#ffff64','#ffc800','#ff6400','#c80000'],
-      velocityScale:0.012,
-      particleAge:60,
-      lineWidth:1.5,
-      particleMultiplier:1/300,
-    }).addTo(S.map);
+    const col = windColour(speed);
+    const W = windCanvas.width, H = windCanvas.height;
+
+    // Normalise direction
+    const mag = Math.sqrt(uVal*uVal + vVal*vVal) || 0.001;
+    const dx =  uVal / mag; // east component
+    const dy = -vVal / mag; // north component (inverted for canvas)
+
+    // Initialise particles
+    windParticles = Array.from({length: count}, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      age: Math.random() * 120,
+      maxAge: 80 + Math.random() * 80,
+      len: 3 + Math.random() * 6,
+    }));
+
+    function drawFrame() {
+      windCtx.clearRect(0, 0, W, H);
+
+      for (const p of windParticles) {
+        const alpha = Math.sin((p.age / p.maxAge) * Math.PI);
+        windCtx.beginPath();
+        windCtx.moveTo(p.x, p.y);
+        windCtx.lineTo(p.x - dx * p.len, p.y - dy * p.len);
+        windCtx.strokeStyle = col.replace(/[\d.]+\)$/, `${(alpha * 0.85).toFixed(2)})`);
+        windCtx.lineWidth = 1.2;
+        windCtx.lineCap = 'round';
+        windCtx.stroke();
+
+        // Move particle
+        p.x += dx * speedPx * 0.5;
+        p.y += dy * speedPx * 0.5;
+        p.age++;
+
+        // Wrap or reset
+        if (p.age > p.maxAge || p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
+          p.x = Math.random() * W;
+          p.y = Math.random() * H;
+          p.age = 0;
+          p.maxAge = 80 + Math.random() * 80;
+        }
+      }
+
+      windAnim = requestAnimationFrame(drawFrame);
+    }
+
+    drawFrame();
+
   } catch(e) {
-    console.warn('Wind animation unavailable:',e);
+    console.warn('Wind animation unavailable:', e);
   }
+}
+
+function stopWindAnimation() {
+  if (windAnim) { cancelAnimationFrame(windAnim); windAnim = null; }
+  if (windCanvas && windCanvas.parentNode) { windCanvas.parentNode.removeChild(windCanvas); }
+  windCanvas = null; windCtx = null; windParticles = [];
 }
 
 // ── Legend toggle & download ──────────────────────────────────────────────
