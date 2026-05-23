@@ -1232,9 +1232,9 @@ body{
           <div class="sat-selector-group">
             <div class="sat-selector-label">Recipient profile</div>
             <div class="seg-group" id="satProfileGroup">
-              <button class="seg-btn active" data-val="sailing">Marine</button>
-              <button class="seg-btn" data-val="alpine">Alpine</button>
-              <button class="seg-btn" data-val="general">General</button>
+              <button class="seg-btn active" data-val="marine">Marine</button>
+              <button class="seg-btn" data-val="overland">Overland</button>
+              <button class="seg-btn" data-val="aviation">Aviation</button>
             </div>
           </div>
           <div class="sat-selector-group">
@@ -2197,20 +2197,19 @@ function renderWeather(d,city,lat,lon) {
     const ssStr = sunTimeToDisplay(sunT.sunset, lon, d.timezone);
     sunStat = `<div class="stat">
       <div class="stat-label">Sun</div>
-      <div style="font-family:var(--font-data);font-size:.75rem;line-height:2;color:var(--on-surface);margin-top:2px">
-        <span style="color:var(--warning)">↑</span>&thinsp;${srStr}<br>
-        <span style="color:var(--on-surface-dim)">↓</span>&thinsp;${ssStr}
+      <div style="font-family:var(--font-data);font-size:.75rem;line-height:2;margin-top:2px">
+        <i class="wi wi-sunrise" style="color:#F59E0B;margin-right:3px;font-size:.875rem"></i>${srStr}<br>
+        <i class="wi wi-sunset" style="color:#7C6AF5;margin-right:3px;font-size:.875rem"></i>${ssStr}
       </div>
     </div>`;
   }
 
   // ── Moon phase ──────────────────────────────────────────
   const moonPh  = getMoonPhase(now);
-  const moonEm  = moonEmoji(moonPh);
   const moonDsc = moonPhaseDesc(moonPh);
   const moonStat = `<div class="stat">
     <div class="stat-label">Moon</div>
-    <div class="stat-val" style="font-size:1.375rem;line-height:1">${moonEm}</div>
+    <div class="stat-val" style="font-size:1.5rem;line-height:1"><i class="wi ${moonWiClass(moonPh)}"></i></div>
     <div style="font-family:var(--font-data);font-size:.5625rem;color:var(--on-surface-dim);margin-top:3px;letter-spacing:.03em">${moonDsc}</div>
   </div>`;
 
@@ -2851,14 +2850,14 @@ function buildLegendText() {
     L,
     'PROFILES',
     '',
-    'Sailing    Wind-first. Triggers: Beaufort changes,',
+    'Marine     Wind-first. Triggers: Beaufort changes,',
     '           direction shifts, gale force, thunderstorms.',
     '',
-    'Alpine     Temp-first. Triggers: temp drop, snow onset,',
+    'Overland   Temp-first. Triggers: temp drop, snow onset,',
     '           high wind, thunderstorms.',
     '',
-    'General    Balanced. Triggers: thunderstorms,',
-    '           heavy weather, high wind.',
+    'Aviation   Balanced (format in development). Triggers:',
+    '           thunderstorms, heavy weather, high wind.',
     '',
     'DEVICES',
     'Garmin inReach    160 character limit',
@@ -2897,7 +2896,7 @@ document.getElementById('satCopyBtn').addEventListener('click',()=>{
   });
 });
 
-function getSatProfile(){ return document.querySelector('#satProfileGroup .seg-btn.active')?.dataset.val||'general'; }
+function getSatProfile(){ return document.querySelector('#satProfileGroup .seg-btn.active')?.dataset.val||'overland'; }
 function getSatDevice() { return parseInt(document.querySelector('#satDeviceGroup .seg-btn.active')?.dataset.val||'160'); }
 
 function isThunderstorm(c){ return[95,96,99].includes(c); }
@@ -2926,12 +2925,12 @@ function determineForecastWindow(hourly,profile,startIdx){
     const wdDiff=Math.abs((hourly.wind_direction_10m[i+1]||0)-hourly.wind_direction_10m[i]);
     const code=hourly.weather_code[i];
     const tDiff=(hourly.temperature_2m[i]||0)-(hourly.temperature_2m[startIdx]||0);
-    if(profile==='sailing'){
+    if(profile==='marine'){
       if(beaufortLevel(wsKmh)!==beaufortLevel(wsNext)) triggers.push({h,reason:'wind_change'});
       if(wdDiff>45&&wdDiff<315) triggers.push({h,reason:'wind_shift'});
       if(isThunderstorm(code))  triggers.push({h,reason:'tstm'});
       if(beaufortLevel(wsKmh)>=7&&h>0) triggers.push({h,reason:'gale'});
-    } else if(profile==='alpine'){
+    } else if(profile==='overland'||profile==='aviation'){
       if(tDiff<-8) triggers.push({h,reason:'temp_drop'});
       if(isThunderstorm(code)) triggers.push({h,reason:'tstm'});
       if(wsKmh>50) triggers.push({h,reason:'high_wind'});
@@ -2965,10 +2964,10 @@ function buildSlot(hourly,idx,profile,label){
   const ws=convertWind(toKmh(hourly.wind_speed_10m[idx]));
   const wd=degToCompass(hourly.wind_direction_10m[idx]);
   const wx=abbrWMO(hourly.weather_code[idx]);
-  if(profile==='sailing'){
+  if(profile==='marine'){
     let s=`${label}:WS${ws}${windLabel()} WD${wd}`;
     if(wx!=='CLR') s+=` ${wx}`; return s;
-  } else if(profile==='alpine'){
+  } else if(profile==='overland'){
     let s=`${label}:${temp}${tempUnit()}`;
     if(wx!=='CLR') s+=` ${wx}`;
     s+=` WS${ws}${windLabel()}`; return s;
