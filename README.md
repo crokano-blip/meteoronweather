@@ -155,16 +155,6 @@ Message Key legend — collapsible, downloadable as .txt.
 
 ---
 
-## Monetisation
-
-Freemium. Not yet implemented — user testing first.
-
-- **Free tier:** Core forecast, all three profiles, map
-- **Meteoron Field (Pro):** Satellite message, extended 72H window, route planner, aviation profile, future features
-- **Pricing target:** ~$5–8/month or $40–50/year
-
----
-
 ## Coding conventions
 
 - All weather and moon icons from Erik Flowers pack (`wi-*` classes). No Unicode emoji for iconography.
